@@ -8,8 +8,10 @@ Released under the Apache 2.0 [LICENSE](https://github.com/invopop/gobl.de.xinvo
 [![Lint](https://github.com/invopop/gobl.de.xinvoice/actions/workflows/lint.yaml/badge.svg)](https://github.com/invopop/gobl.de.xinvoice/actions/workflows/lint.yaml)
 [![Test Go](https://github.com/invopop/gobl.de.xinvoice/actions/workflows/test.yaml/badge.svg)](https://github.com/invopop/gobl.de.xinvoice/actions/workflows/test.yaml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/invopop/gobl.de.xinvoice)](https://goreportcard.com/report/github.com/invopop/gobl.de.xinvoice)
+[![codecov](https://codecov.io/gh/invopop/gobl.de.xinvoice/graph/badge.svg)](https://codecov.io/gh/invopop/gobl.de.xinvoice)
 [![GoDoc](https://godoc.org/github.com/invopop/gobl.de.xinvoice?status.svg)](https://godoc.org/github.com/invopop/gobl.de.xinvoice)
 ![Latest Tag](https://img.shields.io/github/v/tag/invopop/gobl.de.xinvoice)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/invopop/gobl.de.xinvoice)
 
 The XML mapping is done by [gobl.ubl](https://github.com/invopop/gobl.ubl) and
 [gobl.cii](https://github.com/invopop/gobl.cii). This module owns the German

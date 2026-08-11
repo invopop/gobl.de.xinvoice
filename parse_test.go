@@ -81,5 +81,30 @@ func TestParseSyntaxDetection(t *testing.T) {
 	t.Run("garbage", func(t *testing.T) {
 		_, err := xinvoice.Parse([]byte("<html><body>not an invoice</body></html>"))
 		assert.ErrorIs(t, err, xinvoice.ErrUnknownDocument)
+		assert.Contains(t, err.Error(), "unexpected root namespace")
+	})
+
+	t.Run("not XML", func(t *testing.T) {
+		_, err := xinvoice.Parse([]byte("this is not XML at all"))
+		assert.ErrorIs(t, err, xinvoice.ErrUnknownDocument)
+	})
+
+	t.Run("truncated UBL reports the UBL error", func(t *testing.T) {
+		data, err := os.ReadFile(filepath.Join("test", "data", "parse", "invoice-xrechnung-ubl-v3.xml"))
+		require.NoError(t, err)
+		_, err = xinvoice.Parse(data[:len(data)/2])
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "parsing UBL document",
+			"a UBL-rooted failure must surface the UBL error, not the unknown-document one")
+		assert.NotErrorIs(t, err, xinvoice.ErrUnknownDocument)
+	})
+
+	t.Run("truncated CII reports the CII error", func(t *testing.T) {
+		data, err := os.ReadFile(filepath.Join("test", "data", "parse", "invoice-zugferd-v2.xml"))
+		require.NoError(t, err)
+		_, err = xinvoice.Parse(data[:len(data)/2])
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "CII document")
+		assert.NotErrorIs(t, err, xinvoice.ErrUnknownDocument)
 	})
 }
