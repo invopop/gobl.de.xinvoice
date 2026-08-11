@@ -120,6 +120,12 @@ func TestConvertDocumentMetadata(t *testing.T) {
 		assert.Equal(t, "de.xrechnung:ubl-creditnote:3.0.2", doc.VESID)
 	})
 
+	t.Run("nil envelope", func(t *testing.T) {
+		_, err := xinvoice.Convert(nil, xinvoice.FormatXRechnungUBL)
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "nil envelope")
+	})
+
 	t.Run("unknown format", func(t *testing.T) {
 		env := loadEnvelope(t, invoicePath)
 		_, err := xinvoice.Convert(env, "peppol-bis")
