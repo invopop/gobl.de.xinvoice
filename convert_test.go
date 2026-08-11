@@ -82,9 +82,12 @@ func TestConvertGolden(t *testing.T) {
 }
 
 func TestConvertDocumentMetadata(t *testing.T) {
-	env := loadEnvelope(t, filepath.Join("test", "data", "convert", "invoice.json"))
+	// Each subtest loads its own envelope: Convert adds the format's
+	// addon to the invoice, so sharing one would order-couple them.
+	invoicePath := filepath.Join("test", "data", "convert", "invoice.json")
 
 	t.Run("XRechnung UBL", func(t *testing.T) {
+		env := loadEnvelope(t, invoicePath)
 		doc, err := xinvoice.Convert(env, xinvoice.FormatXRechnungUBL)
 		require.NoError(t, err)
 		assert.Equal(t, "Invoice", doc.Element)
@@ -94,6 +97,7 @@ func TestConvertDocumentMetadata(t *testing.T) {
 	})
 
 	t.Run("XRechnung CII", func(t *testing.T) {
+		env := loadEnvelope(t, invoicePath)
 		doc, err := xinvoice.Convert(env, xinvoice.FormatXRechnungCII)
 		require.NoError(t, err)
 		assert.Equal(t, "CrossIndustryInvoice", doc.Element)
@@ -101,6 +105,7 @@ func TestConvertDocumentMetadata(t *testing.T) {
 	})
 
 	t.Run("ZUGFeRD", func(t *testing.T) {
+		env := loadEnvelope(t, invoicePath)
 		doc, err := xinvoice.Convert(env, xinvoice.FormatZUGFeRD)
 		require.NoError(t, err)
 		assert.Equal(t, "de.zugferd:en16931:2.4", doc.VESID)
@@ -116,6 +121,7 @@ func TestConvertDocumentMetadata(t *testing.T) {
 	})
 
 	t.Run("unknown format", func(t *testing.T) {
+		env := loadEnvelope(t, invoicePath)
 		_, err := xinvoice.Convert(env, "peppol-bis")
 		assert.ErrorIs(t, err, xinvoice.ErrUnsupportedFormat)
 	})
