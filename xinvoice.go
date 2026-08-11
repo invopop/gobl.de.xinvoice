@@ -77,16 +77,23 @@ var formats = []*Format{
 	},
 }
 
-// Formats returns the supported German document formats.
+// Formats returns the supported German document formats. The entries
+// are copies: mutating them does not affect the package's registry.
 func Formats() []*Format {
-	return formats
+	out := make([]*Format, len(formats))
+	for i, f := range formats {
+		c := *f
+		out[i] = &c
+	}
+	return out
 }
 
-// FormatFor returns the format with the given key, or nil.
+// FormatFor returns a copy of the format with the given key, or nil.
 func FormatFor(key cbc.Key) *Format {
 	for _, f := range formats {
 		if f.Key == key {
-			return f
+			c := *f
+			return &c
 		}
 	}
 	return nil
