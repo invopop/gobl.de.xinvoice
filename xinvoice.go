@@ -141,6 +141,9 @@ func Convert(env *gobl.Envelope, format cbc.Key, opts ...Option) (*Document, err
 		opt(o)
 	}
 
+	if env == nil {
+		return nil, errors.New("nil envelope")
+	}
 	inv, ok := env.Extract().(*bill.Invoice)
 	if !ok {
 		return nil, errors.New("envelope does not contain an invoice")
