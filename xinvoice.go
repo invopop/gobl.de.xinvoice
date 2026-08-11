@@ -61,19 +61,19 @@ var formats = []*Format{
 		Key:        FormatXRechnungUBL,
 		Name:       "XRechnung UBL Invoice/CreditNote V3",
 		FileName:   "xrechnung-ubl.xml",
-		ublContext: &ContextXRechnungUBL,
+		ublContext: &contextXRechnungUBL,
 	},
 	{
 		Key:        FormatXRechnungCII,
 		Name:       "XRechnung CII Invoice/CreditNote V3",
 		FileName:   "xrechnung-cii.xml",
-		ciiContext: &ContextXRechnungCII,
+		ciiContext: &contextXRechnungCII,
 	},
 	{
 		Key:        FormatZUGFeRD,
 		Name:       "ZUGFeRD V2 (CII)",
 		FileName:   "factur-x.xml",
-		ciiContext: &ContextZUGFeRD,
+		ciiContext: &contextZUGFeRD,
 	},
 }
 

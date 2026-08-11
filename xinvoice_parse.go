@@ -93,7 +93,7 @@ func parseUBL(data []byte, o *parseOptions) (*Parsed, error) {
 	}
 	var opts []ubl.Option
 	if in.CustomizationID == CustomizationIDXRechnung {
-		opts = append(opts, ubl.WithContext(ContextXRechnungUBL))
+		opts = append(opts, ubl.WithContext(contextXRechnungUBL))
 	}
 	if o.from != "" && o.to != "" {
 		opts = append(opts, ubl.WithRouting(o.from, o.to))

@@ -31,9 +31,9 @@ const (
 // into this module (with the external addon registration in GOBL's
 // addons/external.go) is a planned follow-up.
 
-// ContextXRechnungUBL configures gobl.ubl for XRechnung 3.0 in UBL
+// contextXRechnungUBL configures gobl.ubl for XRechnung 3.0 in UBL
 // syntax.
-var ContextXRechnungUBL = ubl.Context{
+var contextXRechnungUBL = ubl.Context{
 	CustomizationID: CustomizationIDXRechnung,
 	ProfileID:       ProfileIDPeppolBilling,
 	Addons:          []cbc.Key{xrechnung.V3},
@@ -43,9 +43,9 @@ var ContextXRechnungUBL = ubl.Context{
 	},
 }
 
-// ContextXRechnungCII configures gobl.cii for XRechnung 3.0 in CII
+// contextXRechnungCII configures gobl.cii for XRechnung 3.0 in CII
 // syntax.
-var ContextXRechnungCII = cii.Context{
+var contextXRechnungCII = cii.Context{
 	GuidelineID: CustomizationIDXRechnung,
 	BusinessID:  ProfileIDPeppolBilling,
 	Version:     cii.VersionD16B,
@@ -53,8 +53,8 @@ var ContextXRechnungCII = cii.Context{
 	VESID:       "de.xrechnung:cii:3.0.2",
 }
 
-// ContextZUGFeRD configures gobl.cii for ZUGFeRD's EN 16931 profile.
-var ContextZUGFeRD = cii.Context{
+// contextZUGFeRD configures gobl.cii for ZUGFeRD's EN 16931 profile.
+var contextZUGFeRD = cii.Context{
 	GuidelineID: GuidelineIDEN16931,
 	Version:     cii.VersionD16B,
 	Addons:      []cbc.Key{zugferd.V2},
