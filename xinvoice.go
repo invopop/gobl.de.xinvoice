@@ -8,6 +8,7 @@ package xinvoice
 import (
 	"errors"
 	"fmt"
+	"slices"
 
 	"github.com/invopop/gobl"
 	cii "github.com/invopop/gobl.cii"
@@ -45,12 +46,13 @@ type Format struct {
 	ciiContext *cii.Context
 }
 
-// Addons returns the GOBL addon keys the format requires.
+// Addons returns the GOBL addon keys the format requires. The slice is
+// a copy: mutating it does not change the format's requirements.
 func (f *Format) Addons() []cbc.Key {
 	if f.ublContext != nil {
-		return f.ublContext.Addons
+		return slices.Clone(f.ublContext.Addons)
 	}
-	return f.ciiContext.Addons
+	return slices.Clone(f.ciiContext.Addons)
 }
 
 // formats defines the supported German document formats.
@@ -63,7 +65,7 @@ var formats = []*Format{
 	},
 	{
 		Key:        FormatXRechnungCII,
-		Name:       "XRechnung CII Invoice V3",
+		Name:       "XRechnung CII Invoice/CreditNote V3",
 		FileName:   "xrechnung-cii.xml",
 		ciiContext: &ContextXRechnungCII,
 	},
@@ -153,9 +155,11 @@ func Convert(env *gobl.Envelope, format cbc.Key, opts ...Option) (*Document, err
 	return convertCII(env, f, o)
 }
 
-// ensureAddons checks that the invoice declares all required addons and
-// adds missing ones, recalculating and revalidating the envelope so the
-// addon's normalizations and rules run.
+// ensureAddons checks that the invoice declares all required addons,
+// adds missing ones (recalculating so the addon's normalizations run),
+// and validates the envelope. Validation always runs, also when the
+// addons were already declared: an envelope built outside the platform
+// can declare an addon and still violate its rules.
 func ensureAddons(env *gobl.Envelope, inv *bill.Invoice, required []cbc.Key) error {
 	var missing []cbc.Key
 	existing := inv.GetAddons()
@@ -164,13 +168,11 @@ func ensureAddons(env *gobl.Envelope, inv *bill.Invoice, required []cbc.Key) err
 			missing = append(missing, a)
 		}
 	}
-	if len(missing) == 0 {
-		return nil
-	}
-
-	inv.SetAddons(append(existing, missing...)...)
-	if err := env.Calculate(); err != nil {
-		return fmt.Errorf("calculating envelope with addons: %w", err)
+	if len(missing) > 0 {
+		inv.SetAddons(append(existing, missing...)...)
+		if err := env.Calculate(); err != nil {
+			return fmt.Errorf("calculating envelope with addons: %w", err)
+		}
 	}
 	if err := env.Validate(); err != nil {
 		return fmt.Errorf("validating envelope with addons: %w", err)
