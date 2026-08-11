@@ -151,3 +151,25 @@ func TestConvertIncompleteInvoice(t *testing.T) {
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "BR-DE-1")
 }
+
+// TestConvertRevalidatesDeclaredAddons builds an envelope OUTSIDE the
+// platform (plain JSON unmarshal, no gobl validation) that declares the
+// XRechnung addon but violates its rules. Convert must reject it.
+func TestConvertRevalidatesDeclaredAddons(t *testing.T) {
+	valid := loadEnvelope(t, filepath.Join("test", "data", "convert", "invoice.json"))
+	inv := valid.Extract().(*bill.Invoice)
+	inv.SetAddons(append(inv.GetAddons(), "de-xrechnung-v3")...)
+	require.NoError(t, valid.Calculate())
+
+	// Round trip through JSON, then break a BR-DE rule without any
+	// recalculation, as a hand-crafted envelope would.
+	data, err := json.Marshal(valid)
+	require.NoError(t, err)
+	env := new(gobl.Envelope)
+	require.NoError(t, json.Unmarshal(data, env))
+	env.Extract().(*bill.Invoice).Payment = nil // BR-DE-1
+
+	_, err = xinvoice.Convert(env, xinvoice.FormatXRechnungUBL)
+	require.Error(t, err, "a declared addon must not bypass validation")
+	assert.Contains(t, err.Error(), "BR-DE-1")
+}

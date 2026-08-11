@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	xinvoice "github.com/invopop/gobl.de.xinvoice"
+	"github.com/invopop/gobl/cbc"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -107,4 +108,33 @@ func TestParseSyntaxDetection(t *testing.T) {
 		assert.Contains(t, err.Error(), "CII document")
 		assert.NotErrorIs(t, err, xinvoice.ErrUnknownDocument)
 	})
+}
+
+// TestParseAttachmentsRoundTrip embeds a file during conversion and
+// asserts Parse extracts it intact, for both syntaxes.
+func TestParseAttachmentsRoundTrip(t *testing.T) {
+	att := xinvoice.BinaryAttachment{
+		ID:          "att-1",
+		Description: "invoice rendition",
+		Data:        []byte("%PDF-1.7 fake body"),
+		MimeCode:    "application/pdf",
+		Filename:    "invoice.pdf",
+	}
+	for _, format := range []cbc.Key{xinvoice.FormatXRechnungUBL, xinvoice.FormatZUGFeRD} {
+		t.Run(format.String(), func(t *testing.T) {
+			env := loadEnvelope(t, filepath.Join("test", "data", "convert", "invoice.json"))
+			doc, err := xinvoice.Convert(env, format, xinvoice.WithAttachment(att))
+			require.NoError(t, err)
+
+			parsed, err := xinvoice.Parse(doc.Data)
+			require.NoError(t, err)
+			require.Len(t, parsed.Attachments, 1)
+			got := parsed.Attachments[0]
+			assert.Equal(t, att.ID, got.ID)
+			assert.Equal(t, att.Description, got.Description)
+			assert.Equal(t, att.MimeCode, got.MimeCode)
+			assert.Equal(t, att.Filename, got.Filename)
+			assert.Equal(t, att.Data, got.Data)
+		})
+	}
 }
