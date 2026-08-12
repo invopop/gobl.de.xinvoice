@@ -2,9 +2,9 @@ package xinvoice
 
 import (
 	cii "github.com/invopop/gobl.cii"
+	"github.com/invopop/gobl.de.xinvoice/addon/xrechnung"
+	"github.com/invopop/gobl.de.xinvoice/addon/zugferd"
 	ubl "github.com/invopop/gobl.ubl"
-	"github.com/invopop/gobl/addons/de/xrechnung"
-	"github.com/invopop/gobl/addons/de/zugferd"
 	"github.com/invopop/gobl/cbc"
 )
 
@@ -27,9 +27,9 @@ const (
 // together with the deprecation of the German document types in the ubl
 // and cii apps.
 //
-// The addon definitions are still imported from GOBL core. Moving them
-// into this module (with the external addon registration in GOBL's
-// addons/external.go) is a planned follow-up.
+// The addon definitions live in this module's addon packages, which
+// register themselves with GOBL when imported. GOBL core lists the keys
+// as approved external addons in its addons/external.go.
 
 // contextXRechnungUBL configures gobl.ubl for XRechnung 3.0 in UBL
 // syntax.

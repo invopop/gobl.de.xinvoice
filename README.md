@@ -148,9 +148,9 @@ go test ./... -update
 - Mapping limitations are those of the base libraries; see
   [gobl.ubl](https://github.com/invopop/gobl.ubl) and
   [gobl.cii](https://github.com/invopop/gobl.cii) directly.
-- The addon definitions still live in GOBL core (`gobl/addons/de`). Moving
-  them into this module's `addon/` packages with the external addon
-  registration in GOBL's `addons/external.go` is a planned follow-up.
+- The addon definitions live in this module's `addon/` packages and
+  register themselves when imported. GOBL core lists the keys as approved
+  external addons in its `addons/external.go`.
 - `gobl.ubl` and `gobl.cii` still carry their own German context values.
   Those are removed together with the deprecation of the German document
   types in the ubl and cii apps.
