@@ -58,5 +58,5 @@ var contextZUGFeRD = cii.Context{
 	GuidelineID: GuidelineIDEN16931,
 	Version:     cii.VersionD16B,
 	Addons:      []cbc.Key{zugferd.V2},
-	VESID:       "de.zugferd:en16931:2.4",
+	VESID:       "de.zugferd:en16931:2.5.2",
 }
