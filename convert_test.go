@@ -108,7 +108,7 @@ func TestConvertDocumentMetadata(t *testing.T) {
 		env := loadEnvelope(t, invoicePath)
 		doc, err := xinvoice.Convert(env, xinvoice.FormatZUGFeRD)
 		require.NoError(t, err)
-		assert.Equal(t, "de.zugferd:en16931:2.4", doc.VESID)
+		assert.Equal(t, "de.zugferd:en16931:2.5.2", doc.VESID)
 		assert.Equal(t, "factur-x.xml", doc.Format.FileName)
 	})
 
