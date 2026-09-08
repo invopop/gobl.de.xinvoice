@@ -105,17 +105,11 @@ func parseUBL(data []byte, o *parseOptions) (*Parsed, error) {
 			return nil, fmt.Errorf("applying German addon to parsed document: %w", err)
 		}
 	}
-	out := &Parsed{Envelope: env, Syntax: SyntaxUBL}
-	for _, ba := range in.ExtractBinaryAttachments() {
-		out.Attachments = append(out.Attachments, BinaryAttachment{
-			ID:          ba.ID,
-			Description: ba.Description,
-			Data:        ba.Data,
-			MimeCode:    ba.MimeCode,
-			Filename:    ba.Filename,
-		})
-	}
-	return out, nil
+	return &Parsed{
+		Envelope:    env,
+		Syntax:      SyntaxUBL,
+		Attachments: ublAttachments(in),
+	}, nil
 }
 
 // parseCII covers XRechnung CII and the XML inside ZUGFeRD PDFs. The
@@ -147,9 +141,18 @@ func parseCII(data []byte, o *parseOptions) (*Parsed, error) {
 			return nil, fmt.Errorf("applying German addon to parsed document: %w", err)
 		}
 	}
-	out := &Parsed{Envelope: env, Syntax: SyntaxCII}
+	return &Parsed{
+		Envelope:    env,
+		Syntax:      SyntaxCII,
+		Attachments: ciiAttachments(in),
+	}, nil
+}
+
+// ublAttachments returns the files embedded in the UBL document.
+func ublAttachments(in *ubl.Invoice) []BinaryAttachment {
+	var atts []BinaryAttachment
 	for _, ba := range in.ExtractBinaryAttachments() {
-		out.Attachments = append(out.Attachments, BinaryAttachment{
+		atts = append(atts, BinaryAttachment{
 			ID:          ba.ID,
 			Description: ba.Description,
 			Data:        ba.Data,
@@ -157,7 +160,22 @@ func parseCII(data []byte, o *parseOptions) (*Parsed, error) {
 			Filename:    ba.Filename,
 		})
 	}
-	return out, nil
+	return atts
+}
+
+// ciiAttachments returns the files embedded in the CII document.
+func ciiAttachments(in *cii.Invoice) []BinaryAttachment {
+	var atts []BinaryAttachment
+	for _, ba := range in.ExtractBinaryAttachments() {
+		atts = append(atts, BinaryAttachment{
+			ID:          ba.ID,
+			Description: ba.Description,
+			Data:        ba.Data,
+			MimeCode:    ba.MimeCode,
+			Filename:    ba.Filename,
+		})
+	}
+	return atts
 }
 
 // stampAddons adds the missing addons to the envelope's invoice and
