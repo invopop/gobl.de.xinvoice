@@ -136,21 +136,26 @@ The library uses testify. Run the tests with:
 go test ./...
 ```
 
-The golden files under `test/data/convert/out` and `test/data/parse/out` are
+The `examples/` directory holds complete German invoices in GOBL form, with
+their calculated and validated envelopes under `examples/out`. Those, and the
+golden files under `test/data/convert/out` and `test/data/parse/out`, are
 regenerated with:
 
 ```bash
-go test ./... -update
+go test . -update
 ```
+
+The `-update` flag belongs to the root package's suites, so the command names
+that package rather than `./...`.
 
 ## Considerations
 
 - Mapping limitations are those of the base libraries; see
   [gobl.ubl](https://github.com/invopop/gobl.ubl) and
   [gobl.cii](https://github.com/invopop/gobl.cii) directly.
-- The addon definitions still live in GOBL core (`gobl/addons/de`). Moving
-  them into this module's `addon/` packages with the external addon
-  registration in GOBL's `addons/external.go` is a planned follow-up.
+- The addon definitions live in this module's `addon/` packages and
+  register themselves when imported. GOBL core lists the keys as approved
+  external addons in its `addons/external.go`.
 - `gobl.ubl` and `gobl.cii` still carry their own German context values.
   Those are removed together with the deprecation of the German document
   types in the ubl and cii apps.
