@@ -132,7 +132,7 @@ func parseCII(data []byte, o *parseOptions) (*Parsed, error) {
 	if o.from != "" && o.to != "" {
 		opts = append(opts, cii.WithRouting(o.from, o.to))
 	}
-	env, err := cii.Parse(data, opts...)
+	env, err := ciiParse(data, opts)
 	if err != nil {
 		return nil, fmt.Errorf("converting CII document to GOBL: %w", err)
 	}
@@ -147,6 +147,19 @@ func parseCII(data []byte, o *parseOptions) (*Parsed, error) {
 		})
 	}
 	return out, nil
+}
+
+// ciiParse wraps gobl.cii's Parse, turning panics into errors: gobl.cii
+// dereferences required elements (such as the settlement) without
+// checking a structurally incomplete document actually carries them,
+// and Parse handles external data.
+func ciiParse(data []byte, opts []cii.ParseOption) (env *gobl.Envelope, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("incomplete document: %v", r)
+		}
+	}()
+	return cii.Parse(data, opts...)
 }
 
 // rootNamespace returns the namespace of the document's root element.
