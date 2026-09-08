@@ -1,9 +1,6 @@
 // Package xinvoice converts GOBL envelopes into the German electronic
 // invoicing formats and back: XRechnung 3.0 in UBL and CII syntax, and
-// ZUGFeRD's EN 16931 profile. The XML mapping is done by gobl.ubl and
-// gobl.cii, pinned to their plain EN 16931 contexts: this module owns
-// the German formats, writes the document identity headers itself, and
-// dispatches between the two syntaxes.
+// ZUGFeRD's EN 16931 profile.
 package xinvoice
 
 import (
@@ -26,20 +23,16 @@ const (
 	FormatXRechnungUBL cbc.Key = "xrechnung-ubl-v3"
 	// FormatXRechnungCII is XRechnung 3.0 in CII syntax.
 	FormatXRechnungCII cbc.Key = "xrechnung-cii-v3"
-	// FormatZUGFeRD is the XML side of ZUGFeRD's EN 16931 profile. The
-	// file name factur-x.xml is set by the ZUGFeRD / Factur-X
-	// specification: readers locate the XML inside the PDF/A-3 by that
-	// exact name.
+	// FormatZUGFeRD is the XML side of ZUGFeRD's EN 16931 profile.
+	// Readers locate the XML inside the PDF/A-3 by the exact file name
+	// factur-x.xml.
 	FormatZUGFeRD cbc.Key = "zugferd-v2"
 )
 
-// ErrUnsupportedFormat is returned when the format key is not one of
-// the supported German formats.
+// ErrUnsupportedFormat is returned for an unknown format key.
 var ErrUnsupportedFormat = errors.New("unsupported format")
 
-// Format describes one supported German document format. The syntax
-// decides which conversion library handles the format; the identity
-// fields are written onto the converted document's headers.
+// Format describes one supported German document format.
 type Format struct {
 	Key      cbc.Key
 	Name     string
@@ -47,17 +40,14 @@ type Format struct {
 
 	syntax Syntax
 	addons []cbc.Key
-	// customizationID and profileID are the document identity headers:
-	// UBL's cbc:CustomizationID / cbc:ProfileID, CII's guideline and
-	// business process context parameters.
+	// customizationID and profileID are the document identity headers.
 	customizationID string
 	profileID       string
 	vesIDInvoice    string
 	vesIDCreditNote string
 }
 
-// Addons returns the GOBL addon keys the format requires. The slice is
-// a copy: mutating it does not change the format's requirements.
+// Addons returns a copy of the GOBL addon keys the format requires.
 func (f *Format) Addons() []cbc.Key {
 	return slices.Clone(f.addons)
 }
@@ -98,8 +88,7 @@ var formats = []*Format{
 	},
 }
 
-// Formats returns the supported German document formats. The entries
-// are copies: mutating them does not affect the package's registry.
+// Formats returns copies of the supported German document formats.
 func Formats() []*Format {
 	out := make([]*Format, len(formats))
 	for i, f := range formats {
@@ -120,8 +109,7 @@ func FormatFor(key cbc.Key) *Format {
 	return nil
 }
 
-// Document carries the serialized XML and the descriptive values used
-// to register or transmit it.
+// Document carries the serialized XML and its transmission metadata.
 type Document struct {
 	// Data is the XML document.
 	Data []byte
@@ -131,7 +119,7 @@ type Document struct {
 	Namespace string
 	Element   string
 	// CustomizationID and ProfileID identify the document flavor and
-	// business process (CII: guideline and business process IDs).
+	// business process.
 	CustomizationID string
 	ProfileID       string
 	// Version is the syntax version (UBL "2.1", CII "D16B").
@@ -147,8 +135,7 @@ type options struct {
 	attachments []BinaryAttachment
 }
 
-// WithAttachment embeds a file inside the generated XML as a binary
-// attachment, such as the PDF rendition of the invoice.
+// WithAttachment embeds a file inside the generated XML.
 func WithAttachment(a BinaryAttachment) Option {
 	return func(o *options) {
 		o.attachments = append(o.attachments, a)
@@ -156,9 +143,8 @@ func WithAttachment(a BinaryAttachment) Option {
 }
 
 // Convert converts a GOBL envelope into the given German format. The
-// envelope's invoice gains the format's addon when it does not declare
-// it yet, so the German rules run before any mapping: an invoice that
-// cannot satisfy the format fails here with the rule violations.
+// invoice gains the format's addon when missing, so the German rules
+// run before any mapping.
 func Convert(env *gobl.Envelope, format cbc.Key, opts ...Option) (*Document, error) {
 	f := FormatFor(format)
 	if f == nil {
@@ -186,11 +172,9 @@ func Convert(env *gobl.Envelope, format cbc.Key, opts ...Option) (*Document, err
 	return convertCII(env, inv, f, o)
 }
 
-// ensureAddons checks that the invoice declares all required addons,
-// adds missing ones (recalculating so the addon's normalizations run),
-// and validates the envelope. Validation always runs, also when the
-// addons were already declared: an envelope built outside the platform
-// can declare an addon and still violate its rules.
+// ensureAddons adds the missing addons, recalculating so their
+// normalizations run, and validates the envelope. Validation always
+// runs: a caller can declare an addon and still violate its rules.
 func ensureAddons(env *gobl.Envelope, inv *bill.Invoice, required []cbc.Key) error {
 	var missing []cbc.Key
 	existing := inv.GetAddons()
@@ -211,9 +195,8 @@ func ensureAddons(env *gobl.Envelope, inv *bill.Invoice, required []cbc.Key) err
 	return nil
 }
 
-// buildUBL builds the plain EN 16931 UBL document, then reworks it into
-// the German format. The German addon on the invoice shapes the content;
-// applyUBL writes the identity headers.
+// buildUBL builds the plain EN 16931 UBL document and reworks it into
+// the German format.
 func buildUBL(env *gobl.Envelope, f *Format) (*ubl.Invoice, error) {
 	out, err := ubl.ConvertInvoice(env, ubl.WithContext(ubl.ContextEN16931))
 	if err != nil {
@@ -224,16 +207,13 @@ func buildUBL(env *gobl.Envelope, f *Format) (*ubl.Invoice, error) {
 }
 
 // applyUBL writes the format's identity headers onto the UBL document.
-// Germany's formats are EN 16931 CIUSes, so unlike gobl.dk.oioubl's
-// applyOIOUBL the rework is identity-only; format-specific document
-// rework would grow here.
 func (f *Format) applyUBL(out *ubl.Invoice) {
 	out.CustomizationID = f.customizationID
 	out.ProfileID = &ubl.IDType{Value: f.profileID}
 }
 
-// buildCII builds the plain EN 16931 CII document, then reworks it into
-// the German format, like buildUBL.
+// buildCII builds the plain EN 16931 CII document and reworks it into
+// the German format.
 func buildCII(env *gobl.Envelope, f *Format) (*cii.Invoice, error) {
 	out, err := cii.ConvertInvoice(env, cii.WithContext(cii.ContextEN16931V2017))
 	if err != nil {
@@ -321,9 +301,7 @@ func convertCII(env *gobl.Envelope, inv *bill.Invoice, f *Format, o *options) (*
 	}, nil
 }
 
-// vesID returns the validation rule set for the invoice's document
-// type. Only the XRechnung UBL rule sets differ per type; the others
-// hold the same value in both fields.
+// vesID returns the validation rule set for the invoice's document type.
 func (f *Format) vesID(inv *bill.Invoice) string {
 	if inv.GetType().Has(bill.InvoiceTypeCreditNote) {
 		return f.vesIDCreditNote

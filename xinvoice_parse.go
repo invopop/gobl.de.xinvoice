@@ -46,9 +46,8 @@ type parseOptions struct {
 	from, to cbc.URI
 }
 
-// WithRouting records the transport direction (sender and receiver
-// participant URIs) on the parsed envelope's header. Both must be set
-// for the option to take effect.
+// WithRouting records the transport direction on the parsed envelope's
+// header. Both values must be set for the option to take effect.
 func WithRouting(from, to cbc.URI) ParseOption {
 	return func(o *parseOptions) {
 		o.from = from
@@ -58,10 +57,7 @@ func WithRouting(from, to cbc.URI) ParseOption {
 
 // Parse reads a German XML invoice in either syntax and converts it to
 // a GOBL envelope. The syntax is decided by the document's root
-// namespace, so a failure inside one syntax reports that syntax's own
-// error. XRechnung documents are recognized by their customization ID
-// and get the German addon stamped from this module's identity values;
-// other flavors keep the base library's own detection.
+// namespace.
 func Parse(data []byte, opts ...ParseOption) (*Parsed, error) {
 	o := new(parseOptions)
 	for _, opt := range opts {
@@ -93,9 +89,8 @@ func parseUBL(data []byte, o *parseOptions) (*Parsed, error) {
 	if !ok {
 		return nil, fmt.Errorf("unsupported UBL document type %T", doc)
 	}
-	// Pin the plain EN 16931 context, like gobl.dk.oioubl does: this
-	// overrides gobl.ubl's detection of its own German context, so the
-	// parse behaves the same before and after that context is removed.
+	// Pin the plain EN 16931 context so the conversion does not depend
+	// on gobl.ubl's own context detection.
 	opts := []ubl.Option{ubl.WithContext(ubl.ContextEN16931)}
 	if o.from != "" && o.to != "" {
 		opts = append(opts, ubl.WithRouting(o.from, o.to))
@@ -104,9 +99,7 @@ func parseUBL(data []byte, o *parseOptions) (*Parsed, error) {
 	if err != nil {
 		return nil, fmt.Errorf("converting UBL document to GOBL: %w", err)
 	}
-	// gobl.ubl stamps the addon while it still carries a German context.
-	// Stamp it from this module's own identity values too, so parsing
-	// keeps producing the same envelopes when the base library loses it.
+	// Stamp the German addon on documents that identify as XRechnung.
 	if in.CustomizationID == CustomizationIDXRechnung {
 		if err := stampAddons(env, []cbc.Key{xrechnung.V3}); err != nil {
 			return nil, fmt.Errorf("applying German addon to parsed document: %w", err)
@@ -126,9 +119,8 @@ func parseUBL(data []byte, o *parseOptions) (*Parsed, error) {
 }
 
 // parseCII covers XRechnung CII and the XML inside ZUGFeRD PDFs. The
-// data is deliberately processed twice: gobl.cii's Parse goes straight
-// to the envelope and offers no wire document to extract attachments
-// from, so Unmarshal provides that separately.
+// data is processed twice: gobl.cii's Parse offers no wire document to
+// extract attachments from, so Unmarshal provides that separately.
 func parseCII(data []byte, o *parseOptions) (*Parsed, error) {
 	wire, err := cii.Unmarshal(data)
 	if err != nil {
@@ -146,11 +138,9 @@ func parseCII(data []byte, o *parseOptions) (*Parsed, error) {
 	if err != nil {
 		return nil, fmt.Errorf("converting CII document to GOBL: %w", err)
 	}
-	// Same as parseUBL: stamp the German addon from this module's own
-	// identity values. Only the XRechnung guideline is unambiguously
-	// German; the generic EN 16931 guideline (which ZUGFeRD's EN 16931
-	// profile shares with plain EN 16931 documents) is left to gobl.cii's
-	// own detection.
+	// Stamp the German addon on documents that identify as XRechnung.
+	// The generic EN 16931 guideline also names non-German documents,
+	// so it is left to gobl.cii's own detection.
 	if in.ExchangedContext != nil && in.ExchangedContext.GuidelineContext != nil &&
 		in.ExchangedContext.GuidelineContext.ID == CustomizationIDXRechnung {
 		if err := stampAddons(env, []cbc.Key{xrechnung.V3}); err != nil {
@@ -171,9 +161,8 @@ func parseCII(data []byte, o *parseOptions) (*Parsed, error) {
 }
 
 // stampAddons adds the missing addons to the envelope's invoice and
-// recalculates. Unlike conversion, parsing does not validate: a received
-// document that violates the addon's rules must still produce an
-// envelope the caller can inspect.
+// recalculates. Parsing does not validate: a received document that
+// violates the addon's rules must still produce an envelope.
 func stampAddons(env *gobl.Envelope, required []cbc.Key) error {
 	inv, ok := env.Extract().(*bill.Invoice)
 	if !ok {
@@ -193,10 +182,8 @@ func stampAddons(env *gobl.Envelope, required []cbc.Key) error {
 	return env.Calculate()
 }
 
-// ciiParse wraps gobl.cii's Parse, turning panics into errors: gobl.cii
-// dereferences required elements (such as the settlement) without
-// checking a structurally incomplete document actually carries them,
-// and Parse handles external data.
+// ciiParse wraps gobl.cii's Parse, turning its panics on structurally
+// incomplete documents into errors.
 func ciiParse(data []byte, opts []cii.ParseOption) (env *gobl.Envelope, err error) {
 	defer func() {
 		if r := recover(); r != nil {
