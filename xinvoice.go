@@ -211,17 +211,53 @@ func ensureAddons(env *gobl.Envelope, inv *bill.Invoice, required []cbc.Key) err
 	return nil
 }
 
-// convertUBL produces the XRechnung UBL document. The base library
-// converts with its default EN 16931 behavior (the German addon on the
-// invoice shapes the content); the German identity headers are written
-// onto the document after.
-func convertUBL(env *gobl.Envelope, inv *bill.Invoice, f *Format, o *options) (*Document, error) {
+// buildUBL builds the plain EN 16931 UBL document, then reworks it into
+// the German format. The German addon on the invoice shapes the content;
+// applyUBL writes the identity headers.
+func buildUBL(env *gobl.Envelope, f *Format) (*ubl.Invoice, error) {
 	out, err := ubl.ConvertInvoice(env, ubl.WithContext(ubl.ContextEN16931))
 	if err != nil {
 		return nil, fmt.Errorf("converting to UBL: %w", err)
 	}
+	f.applyUBL(out)
+	return out, nil
+}
+
+// applyUBL writes the format's identity headers onto the UBL document.
+// Germany's formats are EN 16931 CIUSes, so unlike gobl.dk.oioubl's
+// applyOIOUBL the rework is identity-only; format-specific document
+// rework would grow here.
+func (f *Format) applyUBL(out *ubl.Invoice) {
 	out.CustomizationID = f.customizationID
 	out.ProfileID = &ubl.IDType{Value: f.profileID}
+}
+
+// buildCII builds the plain EN 16931 CII document, then reworks it into
+// the German format, like buildUBL.
+func buildCII(env *gobl.Envelope, f *Format) (*cii.Invoice, error) {
+	out, err := cii.ConvertInvoice(env, cii.WithContext(cii.ContextEN16931V2017))
+	if err != nil {
+		return nil, fmt.Errorf("converting to CII: %w", err)
+	}
+	f.applyCII(out)
+	return out, nil
+}
+
+// applyCII writes the format's identity headers onto the CII document.
+func (f *Format) applyCII(out *cii.Invoice) {
+	out.ExchangedContext.GuidelineContext.ID = f.customizationID
+	if f.profileID != "" {
+		out.ExchangedContext.BusinessContext = &cii.ExchangedContextParameter{ID: f.profileID}
+	}
+}
+
+// convertUBL produces the German UBL document with its transmission
+// metadata.
+func convertUBL(env *gobl.Envelope, inv *bill.Invoice, f *Format, o *options) (*Document, error) {
+	out, err := buildUBL(env, f)
+	if err != nil {
+		return nil, err
+	}
 
 	for _, a := range o.attachments {
 		out.AddBinaryAttachment(ubl.BinaryAttachment{
@@ -250,17 +286,12 @@ func convertUBL(env *gobl.Envelope, inv *bill.Invoice, f *Format, o *options) (*
 	}, nil
 }
 
-// convertCII produces the XRechnung CII or ZUGFeRD document. Like
-// convertUBL, the base library converts with its default EN 16931
-// behavior and the German identity headers are written after.
+// convertCII produces the German CII document with its transmission
+// metadata.
 func convertCII(env *gobl.Envelope, inv *bill.Invoice, f *Format, o *options) (*Document, error) {
-	out, err := cii.ConvertInvoice(env, cii.WithContext(cii.ContextEN16931V2017))
+	out, err := buildCII(env, f)
 	if err != nil {
-		return nil, fmt.Errorf("converting to CII: %w", err)
-	}
-	out.ExchangedContext.GuidelineContext.ID = f.customizationID
-	if f.profileID != "" {
-		out.ExchangedContext.BusinessContext = &cii.ExchangedContextParameter{ID: f.profileID}
+		return nil, err
 	}
 
 	for _, a := range o.attachments {
