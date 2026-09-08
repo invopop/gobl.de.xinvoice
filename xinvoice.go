@@ -1,9 +1,9 @@
 // Package xinvoice converts GOBL envelopes into the German electronic
 // invoicing formats and back: XRechnung 3.0 in UBL and CII syntax, and
 // ZUGFeRD's EN 16931 profile. The XML mapping is done by gobl.ubl and
-// gobl.cii, called without any context: this module owns the German
-// formats, writes the document identity headers itself, and dispatches
-// between the two syntaxes.
+// gobl.cii, pinned to their plain EN 16931 contexts: this module owns
+// the German formats, writes the document identity headers itself, and
+// dispatches between the two syntaxes.
 package xinvoice
 
 import (
@@ -216,7 +216,7 @@ func ensureAddons(env *gobl.Envelope, inv *bill.Invoice, required []cbc.Key) err
 // invoice shapes the content); the German identity headers are written
 // onto the document after.
 func convertUBL(env *gobl.Envelope, inv *bill.Invoice, f *Format, o *options) (*Document, error) {
-	out, err := ubl.ConvertInvoice(env)
+	out, err := ubl.ConvertInvoice(env, ubl.WithContext(ubl.ContextEN16931))
 	if err != nil {
 		return nil, fmt.Errorf("converting to UBL: %w", err)
 	}
@@ -254,7 +254,7 @@ func convertUBL(env *gobl.Envelope, inv *bill.Invoice, f *Format, o *options) (*
 // convertUBL, the base library converts with its default EN 16931
 // behavior and the German identity headers are written after.
 func convertCII(env *gobl.Envelope, inv *bill.Invoice, f *Format, o *options) (*Document, error) {
-	out, err := cii.ConvertInvoice(env)
+	out, err := cii.ConvertInvoice(env, cii.WithContext(cii.ContextEN16931V2017))
 	if err != nil {
 		return nil, fmt.Errorf("converting to CII: %w", err)
 	}

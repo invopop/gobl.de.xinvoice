@@ -93,7 +93,10 @@ func parseUBL(data []byte, o *parseOptions) (*Parsed, error) {
 	if !ok {
 		return nil, fmt.Errorf("unsupported UBL document type %T", doc)
 	}
-	var opts []ubl.Option
+	// Pin the plain EN 16931 context, like gobl.dk.oioubl does: this
+	// overrides gobl.ubl's detection of its own German context, so the
+	// parse behaves the same before and after that context is removed.
+	opts := []ubl.Option{ubl.WithContext(ubl.ContextEN16931)}
 	if o.from != "" && o.to != "" {
 		opts = append(opts, ubl.WithRouting(o.from, o.to))
 	}
