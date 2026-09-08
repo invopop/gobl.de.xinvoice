@@ -1,0 +1,176 @@
+package xinvoice_test
+
+import (
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+
+	xinvoice "github.com/invopop/gobl.de.xinvoice"
+	"github.com/invopop/gobl/cbc"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+// TestParseGolden parses every XML document in test/data/parse and
+// compares the resulting GOBL invoice against the golden files in
+// test/data/parse/out. Run with -update to regenerate them.
+func TestParseGolden(t *testing.T) {
+	files, err := filepath.Glob(filepath.Join("test", "data", "parse", "*.xml"))
+	require.NoError(t, err)
+	require.NotEmpty(t, files, "no parse fixtures found")
+
+	for _, file := range files {
+		t.Run(filepath.Base(file), func(t *testing.T) {
+			data, err := os.ReadFile(file)
+			require.NoError(t, err)
+
+			parsed, err := xinvoice.Parse(data)
+			require.NoError(t, err)
+
+			// Compare the document only: the envelope header carries a
+			// fresh UUID and digest on every run.
+			got, err := json.MarshalIndent(parsed.Envelope.Extract(), "", "\t")
+			require.NoError(t, err)
+			got = normalizeUUID(t, got)
+
+			golden := strings.TrimSuffix(file, ".xml") + ".json"
+			golden = filepath.Join("test", "data", "parse", "out", filepath.Base(golden))
+			if *update {
+				require.NoError(t, os.WriteFile(golden, append(got, '\n'), 0644))
+				return
+			}
+			want, err := os.ReadFile(golden)
+			require.NoError(t, err, "golden file missing, run with -update")
+			assert.JSONEq(t, string(want), string(got))
+		})
+	}
+}
+
+// normalizeUUID stamps a zero UUID on the document: the wire formats
+// carry none, so parsing assigns a fresh one on every run.
+func normalizeUUID(t *testing.T, doc []byte) []byte {
+	t.Helper()
+	raw := map[string]any{}
+	require.NoError(t, json.Unmarshal(doc, &raw))
+	if _, ok := raw["uuid"]; ok {
+		raw["uuid"] = "00000000-0000-0000-0000-000000000000"
+	}
+	out, err := json.MarshalIndent(raw, "", "\t")
+	require.NoError(t, err)
+	return out
+}
+
+func TestParseSyntaxDetection(t *testing.T) {
+	t.Run("UBL", func(t *testing.T) {
+		data, err := os.ReadFile(filepath.Join("test", "data", "parse", "invoice-xrechnung-ubl-v3.xml"))
+		require.NoError(t, err)
+		parsed, err := xinvoice.Parse(data)
+		require.NoError(t, err)
+		assert.Equal(t, xinvoice.SyntaxUBL, parsed.Syntax)
+	})
+
+	t.Run("CII", func(t *testing.T) {
+		data, err := os.ReadFile(filepath.Join("test", "data", "parse", "invoice-zugferd-v2.xml"))
+		require.NoError(t, err)
+		parsed, err := xinvoice.Parse(data)
+		require.NoError(t, err)
+		assert.Equal(t, xinvoice.SyntaxCII, parsed.Syntax)
+	})
+
+	t.Run("garbage", func(t *testing.T) {
+		_, err := xinvoice.Parse([]byte("<html><body>not an invoice</body></html>"))
+		assert.ErrorIs(t, err, xinvoice.ErrUnknownDocument)
+		assert.Contains(t, err.Error(), "unexpected root namespace")
+	})
+
+	t.Run("not XML", func(t *testing.T) {
+		_, err := xinvoice.Parse([]byte("this is not XML at all"))
+		assert.ErrorIs(t, err, xinvoice.ErrUnknownDocument)
+	})
+
+	t.Run("truncated UBL reports the UBL error", func(t *testing.T) {
+		data, err := os.ReadFile(filepath.Join("test", "data", "parse", "invoice-xrechnung-ubl-v3.xml"))
+		require.NoError(t, err)
+		_, err = xinvoice.Parse(data[:len(data)/2])
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "parsing UBL document",
+			"a UBL-rooted failure must surface the UBL error, not the unknown-document one")
+		assert.NotErrorIs(t, err, xinvoice.ErrUnknownDocument)
+	})
+
+	t.Run("truncated CII reports the CII error", func(t *testing.T) {
+		data, err := os.ReadFile(filepath.Join("test", "data", "parse", "invoice-zugferd-v2.xml"))
+		require.NoError(t, err)
+		_, err = xinvoice.Parse(data[:len(data)/2])
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "CII document")
+		assert.NotErrorIs(t, err, xinvoice.ErrUnknownDocument)
+	})
+}
+
+// TestParseIncompleteCII pins that a well-formed but structurally
+// incomplete CII document fails with an error: gobl.cii panics on the
+// missing required elements, and Parse must not crash on external data.
+func TestParseIncompleteCII(t *testing.T) {
+	data := []byte(`<rsm:CrossIndustryInvoice xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"></rsm:CrossIndustryInvoice>`)
+	_, err := xinvoice.Parse(data)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "converting CII document to GOBL: incomplete document")
+}
+
+// TestParseWithRouting asserts the transport direction lands on the
+// envelope header for both syntaxes, and that an incomplete pair is a
+// no-op.
+func TestParseWithRouting(t *testing.T) {
+	from, to := cbc.URI("9930:de811152493"), cbc.URI("9930:de129273398")
+	for _, file := range []string{"invoice-xrechnung-ubl-v3.xml", "invoice-zugferd-v2.xml"} {
+		t.Run(file, func(t *testing.T) {
+			data, err := os.ReadFile(filepath.Join("test", "data", "parse", file))
+			require.NoError(t, err)
+			parsed, err := xinvoice.Parse(data, xinvoice.WithRouting(from, to))
+			require.NoError(t, err)
+			assert.Equal(t, from, parsed.Envelope.Head.From)
+			assert.Equal(t, to, parsed.Envelope.Head.To)
+		})
+	}
+
+	t.Run("incomplete pair is a no-op", func(t *testing.T) {
+		data, err := os.ReadFile(filepath.Join("test", "data", "parse", "invoice-xrechnung-ubl-v3.xml"))
+		require.NoError(t, err)
+		parsed, err := xinvoice.Parse(data, xinvoice.WithRouting(from, ""))
+		require.NoError(t, err)
+		assert.Empty(t, parsed.Envelope.Head.From)
+		assert.Empty(t, parsed.Envelope.Head.To)
+	})
+}
+
+// TestParseAttachmentsRoundTrip embeds a file during conversion and
+// asserts Parse extracts it intact, for both syntaxes.
+func TestParseAttachmentsRoundTrip(t *testing.T) {
+	att := xinvoice.BinaryAttachment{
+		ID:          "att-1",
+		Description: "invoice rendition",
+		Data:        []byte("%PDF-1.7 fake body"),
+		MimeCode:    "application/pdf",
+		Filename:    "invoice.pdf",
+	}
+	for _, format := range []cbc.Key{xinvoice.FormatXRechnungUBL, xinvoice.FormatZUGFeRD} {
+		t.Run(format.String(), func(t *testing.T) {
+			env := loadEnvelope(t, filepath.Join("test", "data", "convert", "invoice.json"))
+			doc, err := xinvoice.Convert(env, format, xinvoice.WithAttachment(att))
+			require.NoError(t, err)
+
+			parsed, err := xinvoice.Parse(doc.Data)
+			require.NoError(t, err)
+			require.Len(t, parsed.Attachments, 1)
+			got := parsed.Attachments[0]
+			assert.Equal(t, att.ID, got.ID)
+			assert.Equal(t, att.Description, got.Description)
+			assert.Equal(t, att.MimeCode, got.MimeCode)
+			assert.Equal(t, att.Filename, got.Filename)
+			assert.Equal(t, att.Data, got.Data)
+		})
+	}
+}
