@@ -110,6 +110,42 @@ func TestParseSyntaxDetection(t *testing.T) {
 	})
 }
 
+// TestParseIncompleteCII pins that a well-formed but structurally
+// incomplete CII document fails with an error: gobl.cii panics on the
+// missing required elements, and Parse must not crash on external data.
+func TestParseIncompleteCII(t *testing.T) {
+	data := []byte(`<rsm:CrossIndustryInvoice xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"></rsm:CrossIndustryInvoice>`)
+	_, err := xinvoice.Parse(data)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "converting CII document to GOBL: incomplete document")
+}
+
+// TestParseWithRouting asserts the transport direction lands on the
+// envelope header for both syntaxes, and that an incomplete pair is a
+// no-op.
+func TestParseWithRouting(t *testing.T) {
+	from, to := cbc.URI("9930:de811152493"), cbc.URI("9930:de129273398")
+	for _, file := range []string{"invoice-xrechnung-ubl-v3.xml", "invoice-zugferd-v2.xml"} {
+		t.Run(file, func(t *testing.T) {
+			data, err := os.ReadFile(filepath.Join("test", "data", "parse", file))
+			require.NoError(t, err)
+			parsed, err := xinvoice.Parse(data, xinvoice.WithRouting(from, to))
+			require.NoError(t, err)
+			assert.Equal(t, from, parsed.Envelope.Head.From)
+			assert.Equal(t, to, parsed.Envelope.Head.To)
+		})
+	}
+
+	t.Run("incomplete pair is a no-op", func(t *testing.T) {
+		data, err := os.ReadFile(filepath.Join("test", "data", "parse", "invoice-xrechnung-ubl-v3.xml"))
+		require.NoError(t, err)
+		parsed, err := xinvoice.Parse(data, xinvoice.WithRouting(from, ""))
+		require.NoError(t, err)
+		assert.Empty(t, parsed.Envelope.Head.From)
+		assert.Empty(t, parsed.Envelope.Head.To)
+	})
+}
+
 // TestParseAttachmentsRoundTrip embeds a file during conversion and
 // asserts Parse extracts it intact, for both syntaxes.
 func TestParseAttachmentsRoundTrip(t *testing.T) {
