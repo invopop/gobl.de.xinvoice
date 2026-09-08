@@ -1,15 +1,11 @@
 package xinvoice
 
-import (
-	cii "github.com/invopop/gobl.cii"
-	ubl "github.com/invopop/gobl.ubl"
-	"github.com/invopop/gobl/addons/de/xrechnung"
-	"github.com/invopop/gobl/addons/de/zugferd"
-	"github.com/invopop/gobl/cbc"
-)
-
-// German document identifiers. The XRechnung customization ID is the
-// value receivers use to recognize the document as XRechnung (BT-24).
+// German document identifiers. These are the values this module writes
+// into the identity headers of the converted documents: UBL's
+// cbc:CustomizationID and cbc:ProfileID, and CII's guideline and
+// business process context parameters. The XRechnung customization ID
+// is the value receivers use to recognize the document as XRechnung
+// (BT-24).
 const (
 	// CustomizationIDXRechnung identifies XRechnung 3.0 documents in
 	// both syntaxes.
@@ -21,42 +17,9 @@ const (
 	ProfileIDPeppolBilling = "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0"
 )
 
-// The German conversion contexts live in this module so the base
-// libraries stay free of country specifics. gobl.ubl and gobl.cii still
-// carry their own German context values today; those are removed
-// together with the deprecation of the German document types in the ubl
-// and cii apps.
-//
-// The addon definitions are still imported from GOBL core. Moving them
-// into this module (with the external addon registration in GOBL's
-// addons/external.go) is a planned follow-up.
-
-// contextXRechnungUBL configures gobl.ubl for XRechnung 3.0 in UBL
-// syntax.
-var contextXRechnungUBL = ubl.Context{
-	CustomizationID: CustomizationIDXRechnung,
-	ProfileID:       ProfileIDPeppolBilling,
-	Addons:          []cbc.Key{xrechnung.V3},
-	VESIDs: ubl.VESIDMapping{
-		Invoice:    "de.xrechnung:ubl-invoice:3.0.2",
-		CreditNote: "de.xrechnung:ubl-creditnote:3.0.2",
-	},
-}
-
-// contextXRechnungCII configures gobl.cii for XRechnung 3.0 in CII
-// syntax.
-var contextXRechnungCII = cii.Context{
-	GuidelineID: CustomizationIDXRechnung,
-	BusinessID:  ProfileIDPeppolBilling,
-	Version:     cii.VersionD16B,
-	Addons:      []cbc.Key{xrechnung.V3},
-	VESID:       "de.xrechnung:cii:3.0.2",
-}
-
-// contextZUGFeRD configures gobl.cii for ZUGFeRD's EN 16931 profile.
-var contextZUGFeRD = cii.Context{
-	GuidelineID: GuidelineIDEN16931,
-	Version:     cii.VersionD16B,
-	Addons:      []cbc.Key{zugferd.V2},
-	VESID:       "de.zugferd:en16931:2.5.2",
-}
+// The base libraries convert with their default EN 16931 behavior and
+// know nothing about Germany: this module ensures the German addon on
+// the invoice before converting (the addon shapes the document content)
+// and writes the identity headers onto the converted document after.
+// The addon definitions still live in GOBL core (gobl/addons/de);
+// moving them into this module is a planned follow-up.

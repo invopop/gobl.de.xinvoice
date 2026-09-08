@@ -17,10 +17,12 @@ this library, we require transferring copyrights to Invopop S.L.
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/invopop/gobl.de.xinvoice)
 
 The XML mapping is done by [gobl.ubl](https://github.com/invopop/gobl.ubl) and
-[gobl.cii](https://github.com/invopop/gobl.cii). This module owns the German
-contexts and formats, the dispatch between the two syntaxes, and the
-detection of the syntax when parsing, so the base libraries stay free of
-anything German.
+[gobl.cii](https://github.com/invopop/gobl.cii), called with their default
+EN 16931 behavior. This module owns the German formats, writes the document
+identity headers (customization, guideline, and business process IDs) onto
+the converted documents, and detects the syntax when parsing, so the base
+libraries stay free of anything German. The German addon on the GOBL
+invoice shapes the document content.
 
 ## Formats
 
@@ -151,9 +153,9 @@ go test ./... -update
 - The addon definitions still live in GOBL core (`gobl/addons/de`). Moving
   them into this module's `addon/` packages with the external addon
   registration in GOBL's `addons/external.go` is a planned follow-up.
-- `gobl.ubl` and `gobl.cii` still carry their own German context values.
-  Those are removed together with the deprecation of the German document
-  types in the ubl and cii apps.
+- `gobl.ubl` and `gobl.cii` still carry their own German context values,
+  but this module no longer uses them. They are removed together with the
+  deprecation of the German document types in the ubl and cii apps.
 - Schematron validation is not part of this module. The gov-de app validates
   every generated document against the KoSIT and FeRD rule sets (named by
   `Document.VESID`) through phorm before persisting it.

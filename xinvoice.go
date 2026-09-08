@@ -1,8 +1,9 @@
 // Package xinvoice converts GOBL envelopes into the German electronic
 // invoicing formats and back: XRechnung 3.0 in UBL and CII syntax, and
 // ZUGFeRD's EN 16931 profile. The XML mapping is done by gobl.ubl and
-// gobl.cii; this module owns the German contexts, formats, and the
-// dispatch between the two syntaxes.
+// gobl.cii, called without any context: this module owns the German
+// formats, writes the document identity headers itself, and dispatches
+// between the two syntaxes.
 package xinvoice
 
 import (
@@ -13,6 +14,8 @@ import (
 	"github.com/invopop/gobl"
 	cii "github.com/invopop/gobl.cii"
 	ubl "github.com/invopop/gobl.ubl"
+	"github.com/invopop/gobl/addons/de/xrechnung"
+	"github.com/invopop/gobl/addons/de/zugferd"
 	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/cbc"
 )
@@ -34,46 +37,64 @@ const (
 // the supported German formats.
 var ErrUnsupportedFormat = errors.New("unsupported format")
 
-// Format describes one supported German document format. Exactly one
-// of the two context fields is set: it decides which conversion library
-// handles the format.
+// Format describes one supported German document format. The syntax
+// decides which conversion library handles the format; the identity
+// fields are written onto the converted document's headers.
 type Format struct {
 	Key      cbc.Key
 	Name     string
 	FileName string
 
-	ublContext *ubl.Context
-	ciiContext *cii.Context
+	syntax Syntax
+	addons []cbc.Key
+	// customizationID and profileID are the document identity headers:
+	// UBL's cbc:CustomizationID / cbc:ProfileID, CII's guideline and
+	// business process context parameters.
+	customizationID string
+	profileID       string
+	vesIDInvoice    string
+	vesIDCreditNote string
 }
 
 // Addons returns the GOBL addon keys the format requires. The slice is
 // a copy: mutating it does not change the format's requirements.
 func (f *Format) Addons() []cbc.Key {
-	if f.ublContext != nil {
-		return slices.Clone(f.ublContext.Addons)
-	}
-	return slices.Clone(f.ciiContext.Addons)
+	return slices.Clone(f.addons)
 }
 
 // formats defines the supported German document formats.
 var formats = []*Format{
 	{
-		Key:        FormatXRechnungUBL,
-		Name:       "XRechnung UBL Invoice/CreditNote V3",
-		FileName:   "xrechnung-ubl.xml",
-		ublContext: &contextXRechnungUBL,
+		Key:             FormatXRechnungUBL,
+		Name:            "XRechnung UBL Invoice/CreditNote V3",
+		FileName:        "xrechnung-ubl.xml",
+		syntax:          SyntaxUBL,
+		addons:          []cbc.Key{xrechnung.V3},
+		customizationID: CustomizationIDXRechnung,
+		profileID:       ProfileIDPeppolBilling,
+		vesIDInvoice:    "de.xrechnung:ubl-invoice:3.0.2",
+		vesIDCreditNote: "de.xrechnung:ubl-creditnote:3.0.2",
 	},
 	{
-		Key:        FormatXRechnungCII,
-		Name:       "XRechnung CII Invoice/CreditNote V3",
-		FileName:   "xrechnung-cii.xml",
-		ciiContext: &contextXRechnungCII,
+		Key:             FormatXRechnungCII,
+		Name:            "XRechnung CII Invoice/CreditNote V3",
+		FileName:        "xrechnung-cii.xml",
+		syntax:          SyntaxCII,
+		addons:          []cbc.Key{xrechnung.V3},
+		customizationID: CustomizationIDXRechnung,
+		profileID:       ProfileIDPeppolBilling,
+		vesIDInvoice:    "de.xrechnung:cii:3.0.2",
+		vesIDCreditNote: "de.xrechnung:cii:3.0.2",
 	},
 	{
-		Key:        FormatZUGFeRD,
-		Name:       "ZUGFeRD V2 (CII)",
-		FileName:   "factur-x.xml",
-		ciiContext: &contextZUGFeRD,
+		Key:             FormatZUGFeRD,
+		Name:            "ZUGFeRD V2 (CII)",
+		FileName:        "factur-x.xml",
+		syntax:          SyntaxCII,
+		addons:          []cbc.Key{zugferd.V2},
+		customizationID: GuidelineIDEN16931,
+		vesIDInvoice:    "de.zugferd:en16931:2.5.2",
+		vesIDCreditNote: "de.zugferd:en16931:2.5.2",
 	},
 }
 
@@ -159,10 +180,10 @@ func Convert(env *gobl.Envelope, format cbc.Key, opts ...Option) (*Document, err
 		return nil, err
 	}
 
-	if f.ublContext != nil {
+	if f.syntax == SyntaxUBL {
 		return convertUBL(env, inv, f, o)
 	}
-	return convertCII(env, f, o)
+	return convertCII(env, inv, f, o)
 }
 
 // ensureAddons checks that the invoice declares all required addons,
@@ -190,12 +211,17 @@ func ensureAddons(env *gobl.Envelope, inv *bill.Invoice, required []cbc.Key) err
 	return nil
 }
 
-// convertUBL produces the XRechnung UBL document.
+// convertUBL produces the XRechnung UBL document. The base library
+// converts with its default EN 16931 behavior (the German addon on the
+// invoice shapes the content); the German identity headers are written
+// onto the document after.
 func convertUBL(env *gobl.Envelope, inv *bill.Invoice, f *Format, o *options) (*Document, error) {
-	out, err := ubl.ConvertInvoice(env, ubl.WithContext(*f.ublContext))
+	out, err := ubl.ConvertInvoice(env)
 	if err != nil {
 		return nil, fmt.Errorf("converting to UBL: %w", err)
 	}
+	out.CustomizationID = f.customizationID
+	out.ProfileID = &ubl.IDType{Value: f.profileID}
 
 	for _, a := range o.attachments {
 		out.AddBinaryAttachment(ubl.BinaryAttachment{
@@ -205,11 +231,6 @@ func convertUBL(env *gobl.Envelope, inv *bill.Invoice, f *Format, o *options) (*
 			MimeCode:    a.MimeCode,
 			Filename:    a.Filename,
 		})
-	}
-
-	vesID := f.ublContext.VESIDs.Invoice
-	if inv.GetType().Has(bill.InvoiceTypeCreditNote) {
-		vesID = f.ublContext.VESIDs.CreditNote
 	}
 
 	data, err := ubl.Bytes(out)
@@ -222,18 +243,24 @@ func convertUBL(env *gobl.Envelope, inv *bill.Invoice, f *Format, o *options) (*
 		Format:          f,
 		Namespace:       out.UBLNamespace,
 		Element:         out.XMLName.Local,
-		CustomizationID: f.ublContext.CustomizationID,
-		ProfileID:       f.ublContext.ProfileID,
+		CustomizationID: f.customizationID,
+		ProfileID:       f.profileID,
 		Version:         ubl.Version,
-		VESID:           vesID,
+		VESID:           f.vesID(inv),
 	}, nil
 }
 
-// convertCII produces the XRechnung CII or ZUGFeRD document.
-func convertCII(env *gobl.Envelope, f *Format, o *options) (*Document, error) {
-	out, err := cii.ConvertInvoice(env, cii.WithContext(*f.ciiContext))
+// convertCII produces the XRechnung CII or ZUGFeRD document. Like
+// convertUBL, the base library converts with its default EN 16931
+// behavior and the German identity headers are written after.
+func convertCII(env *gobl.Envelope, inv *bill.Invoice, f *Format, o *options) (*Document, error) {
+	out, err := cii.ConvertInvoice(env)
 	if err != nil {
 		return nil, fmt.Errorf("converting to CII: %w", err)
+	}
+	out.ExchangedContext.GuidelineContext.ID = f.customizationID
+	if f.profileID != "" {
+		out.ExchangedContext.BusinessContext = &cii.ExchangedContextParameter{ID: f.profileID}
 	}
 
 	for _, a := range o.attachments {
@@ -256,9 +283,19 @@ func convertCII(env *gobl.Envelope, f *Format, o *options) (*Document, error) {
 		Format:          f,
 		Namespace:       cii.NamespaceRSM,
 		Element:         "CrossIndustryInvoice",
-		CustomizationID: f.ciiContext.GuidelineID,
-		ProfileID:       f.ciiContext.BusinessID,
-		Version:         f.ciiContext.Version,
-		VESID:           f.ciiContext.VESID,
+		CustomizationID: f.customizationID,
+		ProfileID:       f.profileID,
+		Version:         cii.VersionD16B,
+		VESID:           f.vesID(inv),
 	}, nil
+}
+
+// vesID returns the validation rule set for the invoice's document
+// type. Only the XRechnung UBL rule sets differ per type; the others
+// hold the same value in both fields.
+func (f *Format) vesID(inv *bill.Invoice) string {
+	if inv.GetType().Has(bill.InvoiceTypeCreditNote) {
+		return f.vesIDCreditNote
+	}
+	return f.vesIDInvoice
 }
