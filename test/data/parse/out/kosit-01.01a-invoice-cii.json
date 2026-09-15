@@ -1,0 +1,199 @@
+{
+	"$addons": [
+		"eu-en16931-v2017",
+		"de-xrechnung-v3"
+	],
+	"$regime": "DE",
+	"code": "123456XX",
+	"currency": "EUR",
+	"customer": {
+		"addresses": [
+			{
+				"code": "12345",
+				"country": "DE",
+				"locality": "[Buyer city]",
+				"street": "[Buyer address line 1]"
+			}
+		],
+		"identities": [
+			{
+				"code": "[Buyer identifier]"
+			}
+		],
+		"inboxes": [
+			{
+				"email": "buyer@info.de"
+			}
+		],
+		"name": "[Buyer name]"
+	},
+	"issue_date": "2016-04-04",
+	"lines": [
+		{
+			"i": 1,
+			"item": {
+				"description": "Zeitschrift Inland",
+				"identities": [
+					{
+						"code": "0721-880X",
+						"label": "IB"
+					}
+				],
+				"name": "Zeitschrift [...]",
+				"price": "288.79",
+				"ref": "246",
+				"unit": "XPP"
+			},
+			"notes": [
+				{
+					"text": "Die letzte Lieferung im Rahmen des abgerechneten Abonnements erfolgt in 12/2016 Lieferung erfolgt / erfolgte direkt vom Verlag"
+				}
+			],
+			"order": "6171175.1",
+			"period": {
+				"end": "2016-12-31",
+				"start": "2016-01-01"
+			},
+			"quantity": "1",
+			"sum": "288.79",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "7%"
+				}
+			],
+			"total": "288.79"
+		},
+		{
+			"i": 2,
+			"item": {
+				"name": "Porto + Versandkosten",
+				"price": "26.07",
+				"unit": "XPP"
+			},
+			"quantity": "1",
+			"sum": "26.07",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "7%"
+				}
+			],
+			"total": "26.07"
+		}
+	],
+	"notes": [
+		{
+			"ext": {
+				"untdid-text-subject": "ADU"
+			},
+			"text": "Es gelten unsere Allgem. Geschäftsbedingungen, die Sie unter […] finden."
+		}
+	],
+	"ordering": {
+		"code": "04011000-12345-03"
+	},
+	"payment": {
+		"instructions": {
+			"credit_transfer": [
+				{
+					"iban": "DE79000000001234567890"
+				}
+			],
+			"ext": {
+				"untdid-payment-means": "58"
+			},
+			"key": "credit-transfer+sepa"
+		},
+		"terms": {
+			"notes": "Zahlbar sofort ohne Abzug."
+		}
+	},
+	"supplier": {
+		"addresses": [
+			{
+				"code": "12345",
+				"country": "DE",
+				"locality": "[Seller city]",
+				"street": "[Seller address line 1]"
+			}
+		],
+		"alias": "[Seller trading name]",
+		"emails": [
+			{
+				"addr": "seller@email.de"
+			}
+		],
+		"identities": [
+			{
+				"code": "[HRA-Eintrag]",
+				"scope": "legal"
+			}
+		],
+		"inboxes": [
+			{
+				"email": "seller@email.de"
+			}
+		],
+		"name": "[Seller name]",
+		"people": [
+			{
+				"name": {
+					"given": "nicht vorhanden"
+				}
+			}
+		],
+		"tax_id": {
+			"code": "123456789",
+			"country": "DE"
+		},
+		"telephones": [
+			{
+				"num": "+49 1234-5678"
+			}
+		]
+	},
+	"tax": {
+		"ext": {
+			"untdid-document-type": "380"
+		},
+		"rounding": "currency"
+	},
+	"totals": {
+		"payable": "336.90",
+		"sum": "314.86",
+		"tax": "22.04",
+		"taxes": {
+			"categories": [
+				{
+					"amount": "22.04",
+					"code": "VAT",
+					"rates": [
+						{
+							"amount": "22.04",
+							"base": "314.86",
+							"ext": {
+								"untdid-tax-category": "S"
+							},
+							"key": "standard",
+							"percent": "7%"
+						}
+					]
+				}
+			],
+			"sum": "22.04"
+		},
+		"total": "314.86",
+		"total_with_tax": "336.90"
+	},
+	"type": "standard",
+	"uuid": "00000000-0000-0000-0000-000000000000"
+}

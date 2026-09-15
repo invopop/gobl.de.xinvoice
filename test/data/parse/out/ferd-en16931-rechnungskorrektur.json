@@ -1,0 +1,269 @@
+{
+	"$addons": [
+		"eu-en16931-v2017"
+	],
+	"$regime": "DE",
+	"code": "RK21012345",
+	"currency": "EUR",
+	"customer": {
+		"addresses": [
+			{
+				"code": "40235",
+				"country": "DE",
+				"locality": "DUESSELDORF",
+				"street": "KUNDENWEG 88"
+			}
+		],
+		"identities": [
+			{
+				"code": "009420"
+			}
+		],
+		"name": "MUSTER-KUNDE GMBH"
+	},
+	"delivery": {
+		"date": "2018-08-05"
+	},
+	"discounts": [
+		{
+			"amount": "-0.10",
+			"i": 1,
+			"reason": "Rechnungsrabatt 1 -2,00% Basisbetrag: -5,00, MwSt. % 19,0",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "19.00%"
+				}
+			]
+		},
+		{
+			"amount": "-0.06",
+			"i": 2,
+			"reason": "Rechnungsrabatt 1 -2,00% Basisbetrag: -2,90, MwSt. %  7,0",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "7.00%"
+				}
+			]
+		},
+		{
+			"amount": "-0.05",
+			"i": 3,
+			"reason": "Rechnungsrabatt 2       Basisbetrag: -5,00, MwSt. % 19,0",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "19.00%"
+				}
+			]
+		},
+		{
+			"amount": "-0.02",
+			"i": 4,
+			"reason": "Rechnungsrabatt 2       Basisbetrag: -2,90, MwSt. %  7,0",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "7.00%"
+				}
+			]
+		}
+	],
+	"issue_date": "2018-09-16",
+	"lines": [
+		{
+			"i": 1,
+			"item": {
+				"description": "Verpackung: Flasche\nVKE/Geb: 1",
+				"identities": [
+					{
+						"code": "4123456000014",
+						"ext": {
+							"iso-scheme-id": "0088"
+						}
+					}
+				],
+				"name": "Zitronensäure 100ml",
+				"price": "1.0000",
+				"ref": "ZS997",
+				"unit": "piece"
+			},
+			"quantity": "-5.0000",
+			"sum": "-5.00",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "19.00%"
+				}
+			],
+			"total": "-5.00"
+		},
+		{
+			"i": 2,
+			"item": {
+				"description": "Verpackung: Karton\nVKE/Geb: 1",
+				"identities": [
+					{
+						"code": "4123456000021",
+						"ext": {
+							"iso-scheme-id": "0088"
+						}
+					}
+				],
+				"name": "Gelierzucker Extra 250g",
+				"price": "1.4500",
+				"ref": "GZ250",
+				"unit": "piece"
+			},
+			"quantity": "-2.0000",
+			"sum": "-2.90",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "7.00%"
+				}
+			],
+			"total": "-2.90"
+		}
+	],
+	"notes": [
+		{
+			"ext": {
+				"untdid-text-subject": "AAK"
+			},
+			"text": "Es bestehen Rabatt- oder Bonusvereinbarungen."
+		},
+		{
+			"ext": {
+				"untdid-text-subject": "REG"
+			},
+			"text": "MUSTERLIEFERANT GMBH\nBAHNHOFSTRASSE 99\n99199 MUSTERHAUSEN\nGeschäftsführung:\nMax Mustermann\nUSt-IdNr: DE123456789\nTelefon: +49 932 431 0\nwww.musterlieferant.de\nHRB Nr. 372876\nAmtsgericht Musterstadt\nGLN 4304171000002"
+		},
+		{
+			"text": "Bei Rückfragen:\nTelefon: +49 932 431 500\nE-Mail : max.muster@musterlieferant.de"
+		},
+		{
+			"text": "Ursprungsbeleg-Nr  : R87654321012345\nReklamationsnummer : REKLA-2018-235"
+		},
+		{
+			"text": "Warenempfänger\nGLN 430417088093\nMUSTER-MARKT\n\nHAUPTSTRASSE 44\n31157 SARSTEDT\n\nAbteilung : 8211"
+		}
+	],
+	"ordering": {
+		"despatch": [
+			{
+				"code": "L87654321012345"
+			}
+		],
+		"purchases": [
+			{
+				"code": "B123456789"
+			}
+		]
+	},
+	"payment": {
+		"advances": [
+			{
+				"amount": "0.00"
+			}
+		]
+	},
+	"supplier": {
+		"addresses": [
+			{
+				"code": "99199",
+				"country": "DE",
+				"locality": "MUSTERHAUSEN",
+				"street": "BAHNHOFSTRASSE 99"
+			}
+		],
+		"identities": [
+			{
+				"code": "549910"
+			},
+			{
+				"code": "4333741000005",
+				"ext": {
+					"iso-scheme-id": "0088"
+				}
+			}
+		],
+		"name": "MUSTERLIEFERANT GMBH",
+		"tax_id": {
+			"code": "123456789",
+			"country": "DE"
+		}
+	},
+	"tax": {
+		"ext": {
+			"untdid-document-type": "384"
+		},
+		"rounding": "currency"
+	},
+	"totals": {
+		"advance": "0.00",
+		"discount": "-0.23",
+		"due": "-8.79",
+		"payable": "-8.79",
+		"sum": "-7.90",
+		"tax": "-1.12",
+		"taxes": {
+			"categories": [
+				{
+					"amount": "-1.12",
+					"code": "VAT",
+					"rates": [
+						{
+							"amount": "-0.92",
+							"base": "-4.85",
+							"ext": {
+								"untdid-tax-category": "S"
+							},
+							"key": "standard",
+							"percent": "19.00%"
+						},
+						{
+							"amount": "-0.20",
+							"base": "-2.82",
+							"ext": {
+								"untdid-tax-category": "S"
+							},
+							"key": "standard",
+							"percent": "7.00%"
+						}
+					]
+				}
+			],
+			"sum": "-1.12"
+		},
+		"total": "-7.67",
+		"total_with_tax": "-8.79"
+	},
+	"type": "corrective",
+	"uuid": "00000000-0000-0000-0000-000000000000"
+}

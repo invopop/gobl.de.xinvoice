@@ -1,0 +1,172 @@
+{
+	"$addons": [
+		"eu-en16931-v2017",
+		"de-xrechnung-v3"
+	],
+	"$regime": "DE",
+	"code": "INV-CN-100",
+	"currency": "EUR",
+	"customer": {
+		"addresses": [
+			{
+				"code": "80331",
+				"country": "DE",
+				"locality": "München",
+				"street": "Marienplatz 15"
+			}
+		],
+		"emails": [
+			{
+				"addr": "test@example.com"
+			}
+		],
+		"inboxes": [
+			{
+				"code": "DE993930191",
+				"scheme": "9930"
+			}
+		],
+		"name": "Bavaria Solutions GmbH",
+		"tax_id": {
+			"code": "993930191",
+			"country": "DE"
+		}
+	},
+	"delivery": {
+		"date": "2025-04-03",
+		"receiver": {
+			"addresses": [
+				{
+					"code": "80331",
+					"country": "DE",
+					"locality": "München",
+					"street": "Marienplatz 15"
+				}
+			],
+			"name": "Bavaria Solutions GmbH"
+		}
+	},
+	"issue_date": "2025-04-03",
+	"lines": [
+		{
+			"i": 1,
+			"item": {
+				"name": "Sambox services",
+				"price": "145.00",
+				"unit": "one"
+			},
+			"quantity": "12",
+			"sum": "1740.00",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "19%"
+				}
+			],
+			"total": "1740.00"
+		}
+	],
+	"ordering": {
+		"code": "04011000-12345-67"
+	},
+	"payment": {
+		"instructions": {
+			"credit_transfer": [
+				{
+					"iban": "DE89370400440532013000",
+					"name": "Rheinland Technologies GmbH"
+				}
+			],
+			"ext": {
+				"untdid-payment-means": "30"
+			},
+			"key": "credit-transfer"
+		},
+		"terms": {
+			"notes": "Will be paid by 2026-06-02"
+		}
+	},
+	"preceding": [
+		{
+			"code": "INV-ENC1",
+			"issue_date": "2025-04-03"
+		}
+	],
+	"supplier": {
+		"addresses": [
+			{
+				"code": "10117",
+				"country": "DE",
+				"locality": "Berlin",
+				"street": "Friedrichstraße 27"
+			}
+		],
+		"emails": [
+			{
+				"addr": "rechnungen@rheinlandtech.de"
+			}
+		],
+		"inboxes": [
+			{
+				"code": "DE879558966",
+				"scheme": "9930"
+			}
+		],
+		"name": "Rheinland Technologies GmbH",
+		"people": [
+			{
+				"name": {
+					"given": "Anna Schmidt"
+				}
+			}
+		],
+		"tax_id": {
+			"code": "879558966",
+			"country": "DE"
+		},
+		"telephones": [
+			{
+				"num": "+49301234567"
+			}
+		]
+	},
+	"tax": {
+		"ext": {
+			"untdid-document-type": "381"
+		},
+		"rounding": "currency"
+	},
+	"totals": {
+		"payable": "2070.60",
+		"sum": "1740.00",
+		"tax": "330.60",
+		"taxes": {
+			"categories": [
+				{
+					"amount": "330.60",
+					"code": "VAT",
+					"rates": [
+						{
+							"amount": "330.60",
+							"base": "1740.00",
+							"ext": {
+								"untdid-tax-category": "S"
+							},
+							"key": "standard",
+							"percent": "19%"
+						}
+					]
+				}
+			],
+			"sum": "330.60"
+		},
+		"total": "1740.00",
+		"total_with_tax": "2070.60"
+	},
+	"type": "credit-note",
+	"uuid": "00000000-0000-0000-0000-000000000000"
+}

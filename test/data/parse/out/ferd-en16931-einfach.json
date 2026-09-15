@@ -1,0 +1,188 @@
+{
+	"$addons": [
+		"eu-en16931-v2017"
+	],
+	"$regime": "DE",
+	"code": "471102",
+	"currency": "EUR",
+	"customer": {
+		"addresses": [
+			{
+				"code": "69876",
+				"country": "DE",
+				"locality": "Frankfurt",
+				"street": "Kundenstraße 15"
+			}
+		],
+		"identities": [
+			{
+				"code": "GE2020211"
+			}
+		],
+		"name": "Kunden AG Mitte"
+	},
+	"delivery": {
+		"date": "2018-03-05"
+	},
+	"issue_date": "2018-03-05",
+	"lines": [
+		{
+			"i": 1,
+			"item": {
+				"identities": [
+					{
+						"code": "4012345001235",
+						"ext": {
+							"iso-scheme-id": "0160"
+						}
+					}
+				],
+				"name": "Trennblätter A4",
+				"price": "9.9000",
+				"ref": "TB100A4",
+				"unit": "piece"
+			},
+			"quantity": "20.0000",
+			"sum": "198.00",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "19.00%"
+				}
+			],
+			"total": "198.00"
+		},
+		{
+			"i": 2,
+			"item": {
+				"identities": [
+					{
+						"code": "4000050986428",
+						"ext": {
+							"iso-scheme-id": "0160"
+						}
+					}
+				],
+				"name": "Joghurt Banane",
+				"price": "5.5000",
+				"ref": "ARNR2",
+				"unit": "piece"
+			},
+			"quantity": "50.0000",
+			"sum": "275.00",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "7.00%"
+				}
+			],
+			"total": "275.00"
+		}
+	],
+	"notes": [
+		{
+			"text": "Rechnung gemäß Bestellung vom 01.03.2018."
+		},
+		{
+			"ext": {
+				"untdid-text-subject": "REG"
+			},
+			"text": "Lieferant GmbH\t\t\t\t\nLieferantenstraße 20\t\t\t\t\n80333 München\t\t\t\t\nDeutschland\t\t\t\t\nGeschäftsführer: Hans Muster\nHandelsregisternummer: H A 123"
+		}
+	],
+	"payment": {
+		"advances": [
+			{
+				"amount": "0.00"
+			}
+		],
+		"terms": {
+			"notes": "Zahlbar innerhalb 30 Tagen netto bis 04.04.2018, 3% Skonto innerhalb 10 Tagen bis 15.03.2018"
+		}
+	},
+	"supplier": {
+		"addresses": [
+			{
+				"code": "80333",
+				"country": "DE",
+				"locality": "München",
+				"street": "Lieferantenstraße 20"
+			}
+		],
+		"identities": [
+			{
+				"code": "549910"
+			},
+			{
+				"code": "201/113/40209",
+				"country": "DE",
+				"scope": "tax"
+			},
+			{
+				"code": "4000001123452",
+				"ext": {
+					"iso-scheme-id": "0088"
+				}
+			}
+		],
+		"name": "Lieferant GmbH",
+		"tax_id": {
+			"code": "123456789",
+			"country": "DE"
+		}
+	},
+	"tax": {
+		"ext": {
+			"untdid-document-type": "380"
+		},
+		"rounding": "currency"
+	},
+	"totals": {
+		"advance": "0.00",
+		"due": "529.87",
+		"payable": "529.87",
+		"sum": "473.00",
+		"tax": "56.87",
+		"taxes": {
+			"categories": [
+				{
+					"amount": "56.87",
+					"code": "VAT",
+					"rates": [
+						{
+							"amount": "37.62",
+							"base": "198.00",
+							"ext": {
+								"untdid-tax-category": "S"
+							},
+							"key": "standard",
+							"percent": "19.00%"
+						},
+						{
+							"amount": "19.25",
+							"base": "275.00",
+							"ext": {
+								"untdid-tax-category": "S"
+							},
+							"key": "standard",
+							"percent": "7.00%"
+						}
+					]
+				}
+			],
+			"sum": "56.87"
+		},
+		"total": "473.00",
+		"total_with_tax": "529.87"
+	},
+	"type": "standard",
+	"uuid": "00000000-0000-0000-0000-000000000000"
+}
