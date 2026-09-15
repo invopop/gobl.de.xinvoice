@@ -12,6 +12,7 @@ import (
 	xinvoice "github.com/invopop/gobl.de.xinvoice"
 	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/cbc"
+	"github.com/invopop/gobl/note"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -178,4 +179,21 @@ func TestConvertRevalidatesDeclaredAddons(t *testing.T) {
 	_, err = xinvoice.Convert(env, xinvoice.FormatXRechnungUBL)
 	require.Error(t, err, "a declared addon must not bypass validation")
 	assert.Contains(t, err.Error(), "BR-DE-1")
+}
+
+// TestFormats pins the registry contents and its copy semantics.
+func TestFormats(t *testing.T) {
+	list := xinvoice.Formats()
+	require.Len(t, list, 3)
+	list[0].FileName = "changed"
+	assert.NotEqual(t, "changed", xinvoice.FormatFor(list[0].Key).FileName)
+	assert.Nil(t, xinvoice.FormatFor("unknown"))
+}
+
+func TestConvertNonInvoice(t *testing.T) {
+	env := gobl.NewEnvelope()
+	require.NoError(t, env.Insert(&note.Message{Content: "not an invoice"}))
+	_, err := xinvoice.Convert(env, xinvoice.FormatXRechnungUBL)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "does not contain an invoice")
 }
