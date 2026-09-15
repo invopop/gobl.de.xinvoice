@@ -6,6 +6,7 @@ require (
 	github.com/invopop/gobl v0.504.0
 	github.com/invopop/gobl.cii v0.55.0
 	github.com/invopop/gobl.ubl v0.71.0
+	github.com/invopop/phorm v0.1.5
 	github.com/stretchr/testify v1.11.1
 )
 

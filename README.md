@@ -161,9 +161,10 @@ that package rather than `./...`.
 - `gobl.ubl` and `gobl.cii` still carry their own German context values,
   but this module no longer uses them. They are removed together with the
   deprecation of the German document types in the ubl and cii apps.
-- Schematron validation is not part of this module. The gov-de app validates
-  every generated document against the KoSIT and FeRD rule sets (named by
-  `Document.VESID`) through phorm before persisting it.
+- Schematron validation is not part of the conversion. The opt-in
+  `TestSchematron` (run with `-validate` and a phorm service; CI runs it
+  with a service container) checks every converted fixture against the
+  KoSIT and FeRD rule sets named by `Document.VESID`.
 
 ## References
 
