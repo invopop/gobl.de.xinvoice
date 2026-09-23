@@ -1,0 +1,136 @@
+{
+	"$addons": [
+		"eu-en16931-v2017",
+		"fr-facturx-v1",
+		"de-zugferd-v2"
+	],
+	"$regime": "DE",
+	"code": "471102",
+	"currency": "EUR",
+	"customer": {
+		"addresses": [
+			{
+				"code": "69876",
+				"country": "DE",
+				"locality": "Frankfurt",
+				"street": "Hans Muster",
+				"street_extra": "Kundenstraße 15"
+			}
+		],
+		"name": "Kunden AG Mitte"
+	},
+	"delivery": {
+		"date": "2020-03-05"
+	},
+	"issue_date": "2020-03-05",
+	"lines": [
+		{
+			"i": 1,
+			"item": {
+				"identities": [
+					{
+						"code": "4012345001235",
+						"ext": {
+							"iso-scheme-id": "0160"
+						}
+					}
+				],
+				"name": "GTIN: 4012345001235\nUnsere Art.-Nr.: TB100A4\nTrennblätter A4",
+				"price": "9.90",
+				"unit": "one"
+			},
+			"quantity": "20.0000",
+			"sum": "198.00",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "19%"
+				}
+			],
+			"total": "198.00"
+		}
+	],
+	"notes": [
+		{
+			"text": "Rechnung gemäß Bestellung vom 01.03.2020."
+		},
+		{
+			"text": "Lieferant GmbH\t\t\t\t\nLieferantenstraße 20\t\t\t\t\n80333 München\t\t\t\t\nDeutschland\t\t\t\t\nGeschäftsführer: Hans Muster\nHandelsregisternummer: H A 123"
+		},
+		{
+			"text": "Unsere GLN: 4000001123452\nIhre GLN: 4000001987658\nIhre Kundennummer: GE2020211\n\n\nZahlbar innerhalb 30 Tagen netto bis 04.04.2020, 3% Skonto innerhalb 10 Tagen bis 15.03.2020."
+		}
+	],
+	"payment": {
+		"terms": {
+			"due_dates": [
+				{
+					"amount": "235.62",
+					"date": "2020-04-04",
+					"percent": "100%"
+				}
+			]
+		}
+	},
+	"supplier": {
+		"addresses": [
+			{
+				"code": "80333",
+				"country": "DE",
+				"locality": "München",
+				"street": "Lieferantenstraße 20"
+			}
+		],
+		"identities": [
+			{
+				"code": "201/113/40209",
+				"country": "DE",
+				"scope": "tax"
+			}
+		],
+		"name": "Lieferant GmbH",
+		"tax_id": {
+			"code": "123456789",
+			"country": "DE"
+		}
+	},
+	"tax": {
+		"ext": {
+			"untdid-document-type": "380"
+		},
+		"rounding": "currency"
+	},
+	"totals": {
+		"payable": "235.62",
+		"sum": "198.00",
+		"tax": "37.62",
+		"taxes": {
+			"categories": [
+				{
+					"amount": "37.62",
+					"code": "VAT",
+					"rates": [
+						{
+							"amount": "37.62",
+							"base": "198.00",
+							"ext": {
+								"untdid-tax-category": "S"
+							},
+							"key": "standard",
+							"percent": "19%"
+						}
+					]
+				}
+			],
+			"sum": "37.62"
+		},
+		"total": "198.00",
+		"total_with_tax": "235.62"
+	},
+	"type": "standard",
+	"uuid": "00000000-0000-0000-0000-000000000000"
+}

@@ -1,0 +1,455 @@
+{
+	"$addons": [
+		"eu-en16931-v2017",
+		"fr-facturx-v1",
+		"de-zugferd-v2"
+	],
+	"$regime": "DE",
+	"code": "R87654321012345",
+	"currency": "EUR",
+	"customer": {
+		"addresses": [
+			{
+				"code": "40235",
+				"country": "DE",
+				"locality": "DUESSELDORF",
+				"street": "KUNDENWEG 88"
+			}
+		],
+		"identities": [
+			{
+				"code": "009420"
+			},
+			{
+				"code": "4304171000002",
+				"ext": {
+					"iso-scheme-id": "0088"
+				}
+			}
+		],
+		"name": "MUSTER-KUNDE GMBH"
+	},
+	"delivery": {
+		"date": "2018-08-05",
+		"identities": [
+			{
+				"code": "4304171088093",
+				"label": "0088"
+			}
+		],
+		"receiver": {
+			"addresses": [
+				{
+					"code": "31157",
+					"country": "DE",
+					"locality": "SARSTEDT",
+					"street": "HAUPTSTRASSE 44"
+				}
+			],
+			"name": "MUSTER-MARKT"
+		}
+	},
+	"discounts": [
+		{
+			"amount": "5.60",
+			"base": "280.00",
+			"i": 1,
+			"percent": "2.00%",
+			"reason": "Rechnungsrabatt 1",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "19.00%"
+				}
+			]
+		},
+		{
+			"amount": "2.61",
+			"base": "130.70",
+			"i": 2,
+			"percent": "2.00%",
+			"reason": "Rechnungsrabatt 1",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "7.00%"
+				}
+			]
+		},
+		{
+			"amount": "2.50",
+			"base": "280.00",
+			"i": 3,
+			"reason": "Rechnungsrabatt 2",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "19.00%"
+				}
+			]
+		},
+		{
+			"amount": "0.50",
+			"base": "130.70",
+			"i": 4,
+			"reason": "Rechnungsrabatt 2",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "7.00%"
+				}
+			]
+		}
+	],
+	"issue_date": "2018-08-06",
+	"lines": [
+		{
+			"i": 1,
+			"item": {
+				"identities": [
+					{
+						"code": "4123456000014",
+						"ext": {
+							"iso-scheme-id": "0088"
+						}
+					}
+				],
+				"meta": {
+					"verpackungsart": "BO"
+				},
+				"name": "Zitronensäure 100ml",
+				"price": "1.0000",
+				"ref": "ZS997",
+				"unit": "one"
+			},
+			"quantity": "100.0000",
+			"sum": "100.00",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "19.00%"
+				}
+			],
+			"total": "100.00"
+		},
+		{
+			"i": 2,
+			"item": {
+				"identities": [
+					{
+						"code": "4123456000021",
+						"ext": {
+							"iso-scheme-id": "0088"
+						}
+					}
+				],
+				"name": "Gelierzucker Extra 250g",
+				"price": "1.4500",
+				"ref": "GZ250",
+				"unit": "one"
+			},
+			"quantity": "50.0000",
+			"sum": "72.50",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "7.00%"
+				}
+			],
+			"total": "72.50"
+		},
+		{
+			"i": 3,
+			"item": {
+				"description": "Artikel wie vereinbart ohne Berechnung",
+				"identities": [
+					{
+						"code": "4123456000021",
+						"ext": {
+							"iso-scheme-id": "0088"
+						}
+					}
+				],
+				"name": "Gelierzucker Extra 250g",
+				"price": "0.0000",
+				"ref": "GZ250",
+				"unit": "one"
+			},
+			"quantity": "10.0000",
+			"sum": "0.00",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "7.00%"
+				}
+			],
+			"total": "0.00"
+		},
+		{
+			"i": 4,
+			"item": {
+				"description": "EAN-VKE: 4100130913297",
+				"identities": [
+					{
+						"code": ""
+					},
+					{
+						"code": "4100130013294",
+						"ext": {
+							"iso-scheme-id": "0088"
+						}
+					}
+				],
+				"meta": {
+					"verpackung": "Kiste"
+				},
+				"name": "Bierbrau Pils 20/0500",
+				"price": "12.0000",
+				"ref": "2031",
+				"unit": "one"
+			},
+			"quantity": "15.0000",
+			"sum": "180.00",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "19.00%"
+				}
+			],
+			"total": "180.00"
+		},
+		{
+			"i": 5,
+			"item": {
+				"identities": [
+					{
+						"code": ""
+					},
+					{
+						"code": "2001015001325",
+						"ext": {
+							"iso-scheme-id": "0088"
+						}
+					}
+				],
+				"meta": {
+					"verpackung": "unverpackt"
+				},
+				"name": "Leergutpfand 20 x 0,5l",
+				"price": "3.1000",
+				"ref": "1805",
+				"unit": "one"
+			},
+			"quantity": "15.0000",
+			"sum": "46.50",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "19.00%"
+				}
+			],
+			"total": "46.50"
+		},
+		{
+			"i": 6,
+			"item": {
+				"identities": [
+					{
+						"code": "4123456000038",
+						"ext": {
+							"iso-scheme-id": "0088"
+						}
+					}
+				],
+				"meta": {
+					"verpackung": "Karton"
+				},
+				"name": "Mischpalette Joghurt Karton 3 x 20",
+				"price": "29.1000",
+				"ref": "MP107",
+				"unit": "one"
+			},
+			"quantity": "2.0000",
+			"sum": "58.20",
+			"taxes": [
+				{
+					"cat": "VAT",
+					"ext": {
+						"untdid-tax-category": "S"
+					},
+					"key": "standard",
+					"percent": "7.00%"
+				}
+			],
+			"total": "58.20"
+		}
+	],
+	"notes": [
+		{
+			"ext": {
+				"untdid-text-subject": "AAK"
+			},
+			"text": "Es bestehen Rabatt- oder Bonusvereinbarungen."
+		},
+		{
+			"ext": {
+				"untdid-text-subject": "AAJ"
+			},
+			"text": "Der Verkäufer bleibt Eigentümer der Waren bis zu vollständigen Erfüllung der Kaufpreisforderung."
+		},
+		{
+			"ext": {
+				"untdid-text-subject": "REG"
+			},
+			"text": "MUSTERLIEFERANT GMBH\nBAHNHOFSTRASSE 99\n99199 MUSTERHAUSEN\nGeschäftsführung:\nMax Mustermann\nUSt-IdNr: DE123456789\nTelefon: +49 932 431 0\nwww.musterlieferant.de\nHRB Nr. 372876\nAmtsgericht Musterstadt\nGLN 4304171000002\nWEEE-Reg-Nr.: DE87654321"
+		},
+		{
+			"text": "Leergutwert: 46,50"
+		},
+		{
+			"text": "Wichtige Information: Bei Bestellungen bis zum 19.12. ist die Auslieferung bis spätestens 23.12. garantiert."
+		}
+	],
+	"ordering": {
+		"identities": [
+			{
+				"code": "A456123",
+				"key": "invoice-data-sheet"
+			}
+		],
+		"purchases": [
+			{
+				"code": "B123456789"
+			}
+		]
+	},
+	"payment": {
+		"advances": [
+			{
+				"amount": "0.00"
+			}
+		],
+		"terms": {
+			"notes": "Bei Zahlung innerhalb 14 Tagen gewähren wir 2,0% Skonto."
+		}
+	},
+	"supplier": {
+		"addresses": [
+			{
+				"code": "99199",
+				"country": "DE",
+				"locality": "MUSTERHAUSEN",
+				"street": "BAHNHOFSTRASSE 99"
+			}
+		],
+		"emails": [
+			{
+				"addr": "max.mustermann@musterlieferant.de"
+			}
+		],
+		"identities": [
+			{
+				"code": "549910"
+			},
+			{
+				"code": "4333741000005",
+				"ext": {
+					"iso-scheme-id": "0088"
+				}
+			}
+		],
+		"name": "MUSTERLIEFERANT GMBH",
+		"tax_id": {
+			"code": "123456789",
+			"country": "DE"
+		},
+		"telephones": [
+			{
+				"num": "+49 932 431 500"
+			}
+		]
+	},
+	"tax": {
+		"ext": {
+			"untdid-document-type": "380"
+		},
+		"rounding": "currency"
+	},
+	"totals": {
+		"advance": "0.00",
+		"discount": "11.21",
+		"due": "515.42",
+		"payable": "515.42",
+		"sum": "457.20",
+		"tax": "69.43",
+		"taxes": {
+			"categories": [
+				{
+					"amount": "69.43",
+					"code": "VAT",
+					"rates": [
+						{
+							"amount": "60.50",
+							"base": "318.40",
+							"ext": {
+								"untdid-tax-category": "S"
+							},
+							"key": "standard",
+							"percent": "19.00%"
+						},
+						{
+							"amount": "8.93",
+							"base": "127.59",
+							"ext": {
+								"untdid-tax-category": "S"
+							},
+							"key": "standard",
+							"percent": "7.00%"
+						}
+					]
+				}
+			],
+			"sum": "69.43"
+		},
+		"total": "445.99",
+		"total_with_tax": "515.42"
+	},
+	"type": "standard",
+	"uuid": "00000000-0000-0000-0000-000000000000"
+}
