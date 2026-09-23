@@ -49,6 +49,10 @@ func TestSchematron(t *testing.T) {
 			xinvoice.FormatXRechnungUBL,
 			xinvoice.FormatXRechnungCII,
 			xinvoice.FormatZUGFeRD,
+			xinvoice.FormatZUGFeRDExtended,
+		}},
+		{"invoice-basic.json", []cbc.Key{
+			xinvoice.FormatZUGFeRDBasic,
 		}},
 		{"credit-note.json", []cbc.Key{
 			xinvoice.FormatXRechnungUBL,
