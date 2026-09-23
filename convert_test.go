@@ -46,6 +46,16 @@ func TestConvertGolden(t *testing.T) {
 				xinvoice.FormatXRechnungUBL,
 				xinvoice.FormatXRechnungCII,
 				xinvoice.FormatZUGFeRD,
+				xinvoice.FormatZUGFeRDExtended,
+			},
+		},
+		{
+			// BASIC's reduced XSD forbids party contact details
+			// (DefinedTradeContact), so the profile has its own fixture
+			// without contact people, telephones, and emails.
+			file: "invoice-basic.json",
+			formats: []cbc.Key{
+				xinvoice.FormatZUGFeRDBasic,
 			},
 		},
 		{
@@ -111,6 +121,23 @@ func TestConvertDocumentMetadata(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, "de.zugferd:en16931:2.5.2", doc.VESID)
 		assert.Equal(t, "factur-x.xml", doc.Format.FileName)
+	})
+
+	t.Run("ZUGFeRD BASIC", func(t *testing.T) {
+		env := loadEnvelope(t, invoicePath)
+		doc, err := xinvoice.Convert(env, xinvoice.FormatZUGFeRDBasic)
+		require.NoError(t, err)
+		assert.Equal(t, "de.zugferd:basic:2.5.2", doc.VESID)
+		assert.Equal(t, xinvoice.GuidelineIDZUGFeRDBasic, doc.CustomizationID)
+		assert.Equal(t, "factur-x.xml", doc.Format.FileName)
+	})
+
+	t.Run("ZUGFeRD EXTENDED", func(t *testing.T) {
+		env := loadEnvelope(t, invoicePath)
+		doc, err := xinvoice.Convert(env, xinvoice.FormatZUGFeRDExtended)
+		require.NoError(t, err)
+		assert.Equal(t, "de.zugferd:extended:2.5.2", doc.VESID)
+		assert.Equal(t, xinvoice.GuidelineIDZUGFeRDExtended, doc.CustomizationID)
 	})
 
 	t.Run("credit note switches rule set", func(t *testing.T) {
@@ -184,7 +211,7 @@ func TestConvertRevalidatesDeclaredAddons(t *testing.T) {
 // TestFormats pins the registry contents and its copy semantics.
 func TestFormats(t *testing.T) {
 	list := xinvoice.Formats()
-	require.Len(t, list, 3)
+	require.Len(t, list, 5)
 	list[0].FileName = "changed"
 	assert.NotEqual(t, "changed", xinvoice.FormatFor(list[0].Key).FileName)
 	assert.Nil(t, xinvoice.FormatFor("unknown"))

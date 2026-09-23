@@ -1,7 +1,8 @@
 # GOBL ➡️ German XRechnung and ZUGFeRD
 
 German electronic invoicing formats for [GOBL](https://github.com/invopop/gobl):
-XRechnung 3.0 in UBL and CII syntax, and the EN 16931 profile of ZUGFeRD.
+XRechnung 3.0 in UBL and CII syntax, and the BASIC, EN 16931, and EXTENDED
+profiles of ZUGFeRD.
 
 Copyright [Invopop S.L.](https://invopop.com) 2026. Released publicly under the
 [Apache License Version 2.0](LICENSE). For commercial licenses, please contact
@@ -31,12 +32,22 @@ invoice shapes the document content.
 | `xrechnung-ubl-v3` | XRechnung 3.0, UBL syntax | `xrechnung-ubl.xml` |
 | `xrechnung-cii-v3` | XRechnung 3.0, CII syntax | `xrechnung-cii.xml` |
 | `zugferd-v2` | ZUGFeRD EN 16931 profile, CII syntax | `factur-x.xml` |
+| `zugferd-basic-v2` | ZUGFeRD BASIC profile, CII syntax | `factur-x.xml` |
+| `zugferd-extended-v2` | ZUGFeRD EXTENDED profile, CII syntax | `factur-x.xml` |
 
 ZUGFeRD and France's Factur-X are the same specification published under two
 national names. The ZUGFeRD file name is set by that specification: readers
 locate the XML inside the PDF/A-3 by the exact name `factur-x.xml`. Embedding
 the XML into the PDF is not part of this module; the gov-de app does that with
 the factur-x CLI.
+
+The conversion does not prune fields the target profile forbids. ZUGFeRD
+BASIC uses a reduced XML schema: an invoice whose supplier or customer
+carries contact people, telephones, or emails produces a
+`DefinedTradeContact` element that fails the BASIC schema validation.
+Remove those fields from the parties before converting to
+`zugferd-basic-v2`. EXTENDED is a superset of EN 16931: every invoice
+that converts to `zugferd-v2` also converts to `zugferd-extended-v2`.
 
 ## Usage
 

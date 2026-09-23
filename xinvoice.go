@@ -1,6 +1,6 @@
 // Package xinvoice converts GOBL envelopes into the German electronic
 // invoicing formats and back: XRechnung 3.0 in UBL and CII syntax, and
-// ZUGFeRD's EN 16931 profile.
+// ZUGFeRD's BASIC, EN 16931, and EXTENDED profiles.
 package xinvoice
 
 import (
@@ -26,6 +26,12 @@ const (
 	// GuidelineIDEN16931 identifies plain EN 16931 CII documents, the
 	// guideline ZUGFeRD's EN 16931 profile uses.
 	GuidelineIDEN16931 = "urn:cen.eu:en16931:2017"
+	// GuidelineIDZUGFeRDBasic identifies ZUGFeRD's BASIC profile, a
+	// restrictive CIUS of EN 16931 with its own reduced XSD.
+	GuidelineIDZUGFeRDBasic = GuidelineIDEN16931 + "#compliant#urn:factur-x.eu:1p0:basic"
+	// GuidelineIDZUGFeRDExtended identifies ZUGFeRD's EXTENDED profile,
+	// a superset of EN 16931.
+	GuidelineIDZUGFeRDExtended = GuidelineIDEN16931 + "#conformant#urn:factur-x.eu:1p0:extended"
 	// ProfileIDPeppolBilling is the Peppol billing process identifier.
 	ProfileIDPeppolBilling = "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0"
 )
@@ -40,7 +46,19 @@ const (
 	// Readers locate the XML inside the PDF/A-3 by the exact file name
 	// factur-x.xml.
 	FormatZUGFeRD cbc.Key = "zugferd-v2"
+	// FormatZUGFeRDBasic is the XML side of ZUGFeRD's BASIC profile. The
+	// converter writes the same EN 16931 content under the BASIC
+	// guideline; documents that carry data outside BASIC's reduced XSD
+	// fail schematron validation instead of losing fields silently.
+	FormatZUGFeRDBasic cbc.Key = "zugferd-basic-v2"
+	// FormatZUGFeRDExtended is the XML side of ZUGFeRD's EXTENDED
+	// profile, a superset of EN 16931.
+	FormatZUGFeRDExtended cbc.Key = "zugferd-extended-v2"
 )
+
+// fileNameFacturX is the file name shared by all ZUGFeRD profiles.
+// Readers locate the XML inside the PDF/A-3 by this exact name.
+const fileNameFacturX = "factur-x.xml"
 
 // ErrUnsupportedFormat is returned for an unknown format key.
 var ErrUnsupportedFormat = errors.New("unsupported format")
@@ -92,12 +110,32 @@ var formats = []*Format{
 	{
 		Key:             FormatZUGFeRD,
 		Name:            "ZUGFeRD V2 (CII)",
-		FileName:        "factur-x.xml",
+		FileName:        fileNameFacturX,
 		syntax:          SyntaxCII,
 		addons:          []cbc.Key{zugferd.V2},
 		customizationID: GuidelineIDEN16931,
 		vesIDInvoice:    "de.zugferd:en16931:2.5.2",
 		vesIDCreditNote: "de.zugferd:en16931:2.5.2",
+	},
+	{
+		Key:             FormatZUGFeRDBasic,
+		Name:            "ZUGFeRD V2 BASIC (CII)",
+		FileName:        fileNameFacturX,
+		syntax:          SyntaxCII,
+		addons:          []cbc.Key{zugferd.V2},
+		customizationID: GuidelineIDZUGFeRDBasic,
+		vesIDInvoice:    "de.zugferd:basic:2.5.2",
+		vesIDCreditNote: "de.zugferd:basic:2.5.2",
+	},
+	{
+		Key:             FormatZUGFeRDExtended,
+		Name:            "ZUGFeRD V2 EXTENDED (CII)",
+		FileName:        fileNameFacturX,
+		syntax:          SyntaxCII,
+		addons:          []cbc.Key{zugferd.V2},
+		customizationID: GuidelineIDZUGFeRDExtended,
+		vesIDInvoice:    "de.zugferd:extended:2.5.2",
+		vesIDCreditNote: "de.zugferd:extended:2.5.2",
 	},
 }
 

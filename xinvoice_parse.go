@@ -11,6 +11,7 @@ import (
 	cii "github.com/invopop/gobl.cii"
 	ubl "github.com/invopop/gobl.ubl"
 	"github.com/invopop/gobl/addons/de/xrechnung"
+	"github.com/invopop/gobl/addons/de/zugferd"
 	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/cbc"
 )
@@ -132,12 +133,11 @@ func parseCII(data []byte, o *parseOptions) (*Parsed, error) {
 	if err != nil {
 		return nil, fmt.Errorf("converting CII document to GOBL: %w", err)
 	}
-	// Stamp the German addon on documents that identify as XRechnung.
-	// The generic EN 16931 guideline also names non-German documents,
-	// so it is left to gobl.cii's own detection.
-	if in.ExchangedContext != nil && in.ExchangedContext.GuidelineContext != nil &&
-		in.ExchangedContext.GuidelineContext.ID == CustomizationIDXRechnung {
-		if err := stampAddons(env, []cbc.Key{xrechnung.V3}); err != nil {
+	// Stamp the German addon that matches the document's guideline. The
+	// generic EN 16931 guideline also names non-German documents, so it
+	// is left to gobl.cii's own detection.
+	if addons := ciiAddonsFor(in); addons != nil {
+		if err := stampAddons(env, addons); err != nil {
 			return nil, fmt.Errorf("applying German addon to parsed document: %w", err)
 		}
 	}
@@ -177,6 +177,33 @@ func ciiAttachments(in *cii.Invoice) []BinaryAttachment {
 	}
 	return atts
 }
+
+// ciiAddonsFor returns the GOBL addons matching the CII document's
+// guideline ID, or nil. Only guideline IDs that name a German
+// specification match: the generic EN 16931 guideline (which ZUGFeRD's
+// EN 16931 profile shares with plain EN 16931 documents) is left to
+// gobl.cii's own detection.
+func ciiAddonsFor(in *cii.Invoice) []cbc.Key {
+	if in.ExchangedContext == nil || in.ExchangedContext.GuidelineContext == nil {
+		return nil
+	}
+	switch in.ExchangedContext.GuidelineContext.ID {
+	case CustomizationIDXRechnung:
+		return []cbc.Key{xrechnung.V3}
+	case GuidelineIDZUGFeRDBasic, GuidelineIDZUGFeRDExtended,
+		guidelineIDZUGFeRD20Basic, guidelineIDZUGFeRD20Extended:
+		return []cbc.Key{zugferd.V2}
+	}
+	return nil
+}
+
+// ZUGFeRD 2.0 wrote its own guideline IDs. ZUGFeRD 2.1 replaced them with
+// the Factur-X 1.0 IDs the formats write today. Documents from 2.0
+// software are still in circulation, so parsing recognizes both.
+const (
+	guidelineIDZUGFeRD20Basic    = GuidelineIDEN16931 + "#compliant#urn:zugferd.de:2p0:basic"
+	guidelineIDZUGFeRD20Extended = GuidelineIDEN16931 + "#conformant#urn:zugferd.de:2p0:extended"
+)
 
 // stampAddons adds the missing addons to the envelope's invoice and
 // recalculates. Parsing does not validate: a received document that
