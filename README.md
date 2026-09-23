@@ -1,7 +1,8 @@
 # GOBL ➡️ German XRechnung and ZUGFeRD
 
 German electronic invoicing formats for [GOBL](https://github.com/invopop/gobl):
-XRechnung 3.0 in UBL and CII syntax, and the EN 16931 profile of ZUGFeRD.
+XRechnung 3.0 in UBL and CII syntax, and the BASIC, EN 16931, and EXTENDED
+profiles of ZUGFeRD.
 
 Copyright [Invopop S.L.](https://invopop.com) 2026. Released publicly under the
 [Apache License Version 2.0](LICENSE). For commercial licenses, please contact
