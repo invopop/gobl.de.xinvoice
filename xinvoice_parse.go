@@ -190,11 +190,20 @@ func ciiAddonsFor(in *cii.Invoice) []cbc.Key {
 	switch in.ExchangedContext.GuidelineContext.ID {
 	case CustomizationIDXRechnung:
 		return []cbc.Key{xrechnung.V3}
-	case GuidelineIDZUGFeRDBasic, GuidelineIDZUGFeRDExtended:
+	case GuidelineIDZUGFeRDBasic, GuidelineIDZUGFeRDExtended,
+		guidelineIDZUGFeRD20Basic, guidelineIDZUGFeRD20Extended:
 		return []cbc.Key{zugferd.V2}
 	}
 	return nil
 }
+
+// ZUGFeRD 2.0 wrote its own guideline IDs. ZUGFeRD 2.1 replaced them with
+// the Factur-X 1.0 IDs the formats write today. Documents from 2.0
+// software are still in circulation, so parsing recognizes both.
+const (
+	guidelineIDZUGFeRD20Basic    = GuidelineIDEN16931 + "#compliant#urn:zugferd.de:2p0:basic"
+	guidelineIDZUGFeRD20Extended = GuidelineIDEN16931 + "#conformant#urn:zugferd.de:2p0:extended"
+)
 
 // stampAddons adds the missing addons to the envelope's invoice and
 // recalculates. Parsing does not validate: a received document that
