@@ -42,10 +42,10 @@ func loadUBLEnvelope(t *testing.T, name string) *gobl.Envelope {
 	return env
 }
 
-// TestContextXRechnungUBLGolden converts each envelope in
-// test/data/ubl/xrechnung with the gobl.ubl context and compares the XML
+// TestUBLFormatXRechnungGolden converts each envelope in
+// test/data/ubl/xrechnung with the gobl.ubl format and compares the XML
 // against the golden files.
-func TestContextXRechnungUBLGolden(t *testing.T) {
+func TestUBLFormatXRechnungGolden(t *testing.T) {
 	examples, err := filepath.Glob(filepath.Join("test", "data", "ubl", "xrechnung", "*.json"))
 	require.NoError(t, err)
 	require.NotEmpty(t, examples)
@@ -53,9 +53,9 @@ func TestContextXRechnungUBLGolden(t *testing.T) {
 		name := filepath.Base(example)
 		t.Run(name, func(t *testing.T) {
 			env := loadUBLEnvelope(t, filepath.Join("xrechnung", name))
-			doc, err := ubl.ConvertInvoice(env, ubl.WithContext(xinvoice.ContextXRechnungUBL))
+			doc, err := ubl.ExportInvoice(env, ubl.WithFormat(xinvoice.UBLFormatXRechnung))
 			require.NoError(t, err)
-			data, err := ubl.Bytes(doc)
+			data, err := ubl.Encode(doc)
 			require.NoError(t, err)
 
 			golden := filepath.Join("test", "data", "ubl", "xrechnung", "out", strings.Replace(name, ".json", ".xml", 1))
@@ -69,10 +69,10 @@ func TestContextXRechnungUBLGolden(t *testing.T) {
 	}
 }
 
-func TestContextXRechnungUBL(t *testing.T) {
+func TestUBLFormatXRechnung(t *testing.T) {
 	t.Run("identity headers", func(t *testing.T) {
 		env := loadUBLEnvelope(t, "xrechnung/invoice-xr-minimal.json")
-		doc, err := ubl.Convert(env, ubl.WithContext(xinvoice.ContextXRechnungUBL))
+		doc, err := ubl.Export(env, ubl.WithFormat(xinvoice.UBLFormatXRechnung))
 		require.NoError(t, err)
 		out, ok := doc.(*ubl.Invoice)
 		require.True(t, ok)
@@ -81,16 +81,16 @@ func TestContextXRechnungUBL(t *testing.T) {
 	})
 
 	t.Run("found by its identifiers", func(t *testing.T) {
-		ctx := ubl.FindContext(xinvoice.CustomizationIDXRechnung, xinvoice.ProfileIDPeppolBilling)
-		require.NotNil(t, ctx)
-		assert.Equal(t, xinvoice.KeyXRechnungUBL, ctx.Key)
+		f := ubl.FindFormat(xinvoice.CustomizationIDXRechnung, xinvoice.ProfileIDPeppolBilling)
+		require.NotNil(t, f)
+		assert.Equal(t, xinvoice.KeyXRechnungUBL, f.Key)
 	})
 
 	t.Run("VESIDs", func(t *testing.T) {
 		env := loadUBLEnvelope(t, "xrechnung/invoice-xr-minimal.json")
 		inv, ok := env.Extract().(*bill.Invoice)
 		require.True(t, ok)
-		assert.Equal(t, "de.xrechnung:ubl-invoice:3.0.2", xinvoice.ContextXRechnungUBL.GetVESID(inv))
+		assert.Equal(t, "de.xrechnung:ubl-invoice:3.0.2", xinvoice.UBLFormatXRechnung.GetVESID(inv))
 	})
 }
 
@@ -98,25 +98,25 @@ func TestConvertRegister(t *testing.T) {
 	t.Run("detect and import", func(t *testing.T) {
 		data, err := os.ReadFile(filepath.Join("test", "data", "parse", "invoice-xrechnung-ubl-v3.xml"))
 		require.NoError(t, err)
-		ctx, err := convert.Detect(data)
+		f, err := convert.Detect(data)
 		require.NoError(t, err)
-		assert.Equal(t, xinvoice.KeyXRechnungUBL, ctx.Key)
+		assert.Equal(t, xinvoice.KeyXRechnungUBL, f.Key)
 
 		env, err := convert.Import(data)
 		require.NoError(t, err)
 		inv, ok := env.Extract().(*bill.Invoice)
 		require.True(t, ok)
-		assert.Contains(t, inv.GetAddons(), xinvoice.ContextXRechnungUBL.Addons[0])
+		assert.Contains(t, inv.GetAddons(), xinvoice.UBLFormatXRechnung.Addons[0])
 	})
 
 	t.Run("export", func(t *testing.T) {
 		env := loadUBLEnvelope(t, "xrechnung/invoice-xr-minimal.json")
-		out, err := convert.Export(env, xinvoice.KeyXRechnungUBL, ubl.ContextEN16931.Key)
+		out, err := convert.Export(env, xinvoice.KeyXRechnungUBL, ubl.FormatEN16931.Key)
 		require.NoError(t, err)
-		assert.Equal(t, xinvoice.KeyXRechnungUBL, out.Context.Key)
+		assert.Equal(t, xinvoice.KeyXRechnungUBL, out.Format.Key)
 
-		ctx, err := convert.Detect(out.Data)
+		f, err := convert.Detect(out.Data)
 		require.NoError(t, err)
-		assert.Equal(t, xinvoice.KeyXRechnungUBL, ctx.Key, "detected again")
+		assert.Equal(t, xinvoice.KeyXRechnungUBL, f.Key, "detected again")
 	})
 }

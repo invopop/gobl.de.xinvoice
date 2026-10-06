@@ -14,10 +14,10 @@ import (
 // convert register.
 const KeyXRechnungUBL cbc.Key = "ubl+de-xrechnung-v3"
 
-// ContextXRechnungUBL is the gobl.ubl context for XRechnung 3.0 in UBL
+// UBLFormatXRechnung is the gobl.ubl format for XRechnung 3.0 in UBL
 // syntax. It is registered with gobl.ubl and the GOBL convert register
 // when this package is imported.
-var ContextXRechnungUBL = ubl.Context{
+var UBLFormatXRechnung = ubl.Format{
 	Key:             KeyXRechnungUBL,
 	Name:            i18n.NewString("UBL XRechnung 3"),
 	Countries:       []l10n.Code{l10n.DE},
@@ -32,5 +32,5 @@ var ContextXRechnungUBL = ubl.Context{
 }
 
 func init() {
-	ubl.RegisterContexts(ContextXRechnungUBL)
+	ubl.RegisterFormats(UBLFormatXRechnung)
 }

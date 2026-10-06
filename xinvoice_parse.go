@@ -82,7 +82,7 @@ func Parse(data []byte, opts ...ParseOption) (*Parsed, error) {
 
 // parseUBL covers XRechnung UBL invoices and credit notes.
 func parseUBL(data []byte, o *parseOptions) (*Parsed, error) {
-	doc, err := ubl.Parse(data)
+	doc, err := ubl.Decode(data)
 	if err != nil {
 		return nil, fmt.Errorf("parsing UBL document: %w", err)
 	}
@@ -90,13 +90,13 @@ func parseUBL(data []byte, o *parseOptions) (*Parsed, error) {
 	if !ok {
 		return nil, fmt.Errorf("unsupported UBL document type %T", doc)
 	}
-	// Pin the plain EN 16931 context so the conversion does not depend
-	// on gobl.ubl's own context detection.
-	opts := []ubl.Option{ubl.WithContext(ubl.ContextEN16931)}
+	// Pin the plain EN 16931 format so the import does not depend
+	// on gobl.ubl's own format detection.
+	opts := []ubl.Option{ubl.WithFormat(ubl.FormatEN16931)}
 	if o.from != "" && o.to != "" {
 		opts = append(opts, ubl.WithRouting(o.from, o.to))
 	}
-	env, err := in.Convert(opts...)
+	env, err := ubl.Import(in, opts...)
 	if err != nil {
 		return nil, fmt.Errorf("converting UBL document to GOBL: %w", err)
 	}
