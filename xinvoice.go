@@ -249,7 +249,7 @@ func ensureAddons(env *gobl.Envelope, inv *bill.Invoice, required []cbc.Key) err
 // buildUBL builds the plain EN 16931 UBL document and reworks it into
 // the German format.
 func buildUBL(env *gobl.Envelope, f *Format) (*ubl.Invoice, error) {
-	out, err := ubl.ConvertInvoice(env, ubl.WithContext(ubl.ContextEN16931))
+	out, err := ubl.ExportInvoice(env, ubl.WithFormat(ubl.FormatEN16931))
 	if err != nil {
 		return nil, fmt.Errorf("converting to UBL: %w", err)
 	}
@@ -300,7 +300,7 @@ func convertUBL(env *gobl.Envelope, inv *bill.Invoice, f *Format, o *options) (*
 		})
 	}
 
-	data, err := ubl.Bytes(out)
+	data, err := ubl.Encode(out)
 	if err != nil {
 		return nil, fmt.Errorf("serializing UBL document: %w", err)
 	}

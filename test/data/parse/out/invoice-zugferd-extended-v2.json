@@ -52,6 +52,9 @@
 		{
 			"i": 1,
 			"item": {
+				"ext": {
+					"untdid-unit": "C62"
+				},
 				"name": "Sambox services",
 				"price": "145.00",
 				"unit": "one"

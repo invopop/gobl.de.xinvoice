@@ -5,6 +5,9 @@
 		"de-zugferd-v2"
 	],
 	"$regime": "DE",
+	"$tags": [
+		"bypass"
+	],
 	"code": "R87654321012345",
 	"currency": "EUR",
 	"customer": {
@@ -86,7 +89,6 @@
 		},
 		{
 			"amount": "2.50",
-			"base": "280.00",
 			"i": 3,
 			"reason": "Rechnungsrabatt 2",
 			"taxes": [
@@ -102,7 +104,6 @@
 		},
 		{
 			"amount": "0.50",
-			"base": "130.70",
 			"i": 4,
 			"reason": "Rechnungsrabatt 2",
 			"taxes": [
@@ -122,6 +123,15 @@
 		{
 			"i": 1,
 			"item": {
+				"attributes": [
+					{
+						"label": "Verpackungsart",
+						"text": "BO"
+					}
+				],
+				"ext": {
+					"untdid-unit": "C62"
+				},
 				"identities": [
 					{
 						"code": "4123456000014",
@@ -130,9 +140,6 @@
 						}
 					}
 				],
-				"meta": {
-					"verpackungsart": "BO"
-				},
 				"name": "Zitronensäure 100ml",
 				"price": "1.0000",
 				"ref": "ZS997",
@@ -155,6 +162,9 @@
 		{
 			"i": 2,
 			"item": {
+				"ext": {
+					"untdid-unit": "C62"
+				},
 				"identities": [
 					{
 						"code": "4123456000021",
@@ -186,6 +196,9 @@
 			"i": 3,
 			"item": {
 				"description": "Artikel wie vereinbart ohne Berechnung",
+				"ext": {
+					"untdid-unit": "C62"
+				},
 				"identities": [
 					{
 						"code": "4123456000021",
@@ -216,7 +229,16 @@
 		{
 			"i": 4,
 			"item": {
+				"attributes": [
+					{
+						"label": "Verpackung",
+						"text": "Kiste"
+					}
+				],
 				"description": "EAN-VKE: 4100130913297",
+				"ext": {
+					"untdid-unit": "C62"
+				},
 				"identities": [
 					{
 						"code": ""
@@ -228,9 +250,6 @@
 						}
 					}
 				],
-				"meta": {
-					"verpackung": "Kiste"
-				},
 				"name": "Bierbrau Pils 20/0500",
 				"price": "12.0000",
 				"ref": "2031",
@@ -253,6 +272,15 @@
 		{
 			"i": 5,
 			"item": {
+				"attributes": [
+					{
+						"label": "Verpackung",
+						"text": "unverpackt"
+					}
+				],
+				"ext": {
+					"untdid-unit": "C62"
+				},
 				"identities": [
 					{
 						"code": ""
@@ -264,9 +292,6 @@
 						}
 					}
 				],
-				"meta": {
-					"verpackung": "unverpackt"
-				},
 				"name": "Leergutpfand 20 x 0,5l",
 				"price": "3.1000",
 				"ref": "1805",
@@ -289,6 +314,15 @@
 		{
 			"i": 6,
 			"item": {
+				"attributes": [
+					{
+						"label": "Verpackung",
+						"text": "Karton"
+					}
+				],
+				"ext": {
+					"untdid-unit": "C62"
+				},
 				"identities": [
 					{
 						"code": "4123456000038",
@@ -297,9 +331,6 @@
 						}
 					}
 				],
-				"meta": {
-					"verpackung": "Karton"
-				},
 				"name": "Mischpalette Joghurt Karton 3 x 20",
 				"price": "29.1000",
 				"ref": "MP107",
@@ -413,24 +444,24 @@
 	},
 	"totals": {
 		"advance": "0.00",
+		"charge": "3.00",
 		"discount": "11.21",
-		"due": "515.42",
-		"payable": "515.42",
+		"due": "518.99",
+		"payable": "518.99",
 		"sum": "457.20",
-		"tax": "69.43",
+		"tax": "70.00",
 		"taxes": {
 			"categories": [
 				{
-					"amount": "69.43",
+					"amount": "70.00",
 					"code": "VAT",
 					"rates": [
 						{
-							"amount": "60.50",
-							"base": "318.40",
+							"amount": "61.07",
+							"base": "321.40",
 							"ext": {
 								"untdid-tax-category": "S"
 							},
-							"key": "standard",
 							"percent": "19.00%"
 						},
 						{
@@ -439,16 +470,15 @@
 							"ext": {
 								"untdid-tax-category": "S"
 							},
-							"key": "standard",
 							"percent": "7.00%"
 						}
 					]
 				}
 			],
-			"sum": "69.43"
+			"sum": "70.00"
 		},
-		"total": "445.99",
-		"total_with_tax": "515.42"
+		"total": "448.99",
+		"total_with_tax": "518.99"
 	},
 	"type": "standard",
 	"uuid": "00000000-0000-0000-0000-000000000000"

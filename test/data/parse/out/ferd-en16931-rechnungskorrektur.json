@@ -92,6 +92,9 @@
 			"i": 1,
 			"item": {
 				"description": "Verpackung: Flasche\nVKE/Geb: 1",
+				"ext": {
+					"untdid-unit": "H87"
+				},
 				"identities": [
 					{
 						"code": "4123456000014",
@@ -123,6 +126,9 @@
 			"i": 2,
 			"item": {
 				"description": "Verpackung: Karton\nVKE/Geb: 1",
+				"ext": {
+					"untdid-unit": "H87"
+				},
 				"identities": [
 					{
 						"code": "4123456000021",
