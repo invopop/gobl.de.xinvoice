@@ -139,6 +139,7 @@
 						}
 					}
 				],
+				"list": "1.0000",
 				"name": "Zitronensäure 100ml",
 				"price": "1.0000",
 				"ref": "ZS997",
@@ -206,6 +207,7 @@
 						}
 					}
 				],
+				"list": "0.0000",
 				"name": "Gelierzucker Extra 250g",
 				"price": "0.0000",
 				"ref": "GZ250",
@@ -249,6 +251,7 @@
 						}
 					}
 				],
+				"list": "12.0000",
 				"name": "Bierbrau Pils 20/0500",
 				"price": "12.0000",
 				"ref": "2031",
@@ -291,6 +294,7 @@
 						}
 					}
 				],
+				"list": "3.1000",
 				"name": "Leergutpfand 20 x 0,5l",
 				"price": "3.1000",
 				"ref": "1805",
@@ -319,6 +323,7 @@
 						"text": "Karton"
 					}
 				],
+				"discount": "0.9000",
 				"ext": {
 					"untdid-unit": "C62"
 				},
@@ -330,6 +335,7 @@
 						}
 					}
 				],
+				"list": "30.0000",
 				"name": "Mischpalette Joghurt Karton 3 x 20",
 				"price": "29.1000",
 				"ref": "MP107",
