@@ -1,8 +1,8 @@
 package xinvoice
 
 import (
+	"github.com/invopop/gobl.de.xinvoice/addon/xrechnung"
 	ubl "github.com/invopop/gobl.ubl"
-	"github.com/invopop/gobl/addons/de/xrechnung"
 	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/i18n"

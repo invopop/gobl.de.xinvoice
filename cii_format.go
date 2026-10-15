@@ -3,8 +3,8 @@ package xinvoice
 import (
 	"github.com/invopop/gobl"
 	cii "github.com/invopop/gobl.cii"
-	"github.com/invopop/gobl/addons/de/xrechnung"
-	"github.com/invopop/gobl/addons/de/zugferd"
+	"github.com/invopop/gobl.de.xinvoice/addon/xrechnung"
+	"github.com/invopop/gobl.de.xinvoice/addon/zugferd"
 	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/catalogues/untdid"
 	"github.com/invopop/gobl/cbc"
