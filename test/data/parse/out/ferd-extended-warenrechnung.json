@@ -242,9 +242,6 @@
 				},
 				"identities": [
 					{
-						"code": ""
-					},
-					{
 						"code": "4100130013294",
 						"ext": {
 							"iso-scheme-id": "0088"
@@ -284,9 +281,6 @@
 					"untdid-unit": "C62"
 				},
 				"identities": [
-					{
-						"code": ""
-					},
 					{
 						"code": "2001015001325",
 						"ext": {

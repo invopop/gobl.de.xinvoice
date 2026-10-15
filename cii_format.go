@@ -43,6 +43,7 @@ var CIIFormatXRechnung = cii.Format{
 	Version:     cii.VersionD16B,
 	Addons:      []cbc.Key{xrechnung.V3},
 	VESID:       vesIDXRechnungCII,
+	Attachments: true,
 }
 
 // CIIFormatZUGFeRD is the gobl.cii format for the ZUGFeRD EN 16931
@@ -59,6 +60,7 @@ var CIIFormatZUGFeRD = cii.Format{
 	Addons:      []cbc.Key{zugferd.V2},
 	VESID:       vesIDZUGFeRD,
 	ExportFuncs: []cii.ExportFunc{exportZUGFeRD},
+	Attachments: true,
 }
 
 // CIIFormatZUGFeRDBasic is the gobl.cii format for the ZUGFeRD BASIC profile,
@@ -89,6 +91,7 @@ var CIIFormatZUGFeRDExtended = cii.Format{
 	Addons:      []cbc.Key{zugferd.V2},
 	VESID:       vesIDZUGFeRDExtended,
 	ExportFuncs: []cii.ExportFunc{exportZUGFeRD, exportSubLines},
+	Attachments: true,
 }
 
 func init() {

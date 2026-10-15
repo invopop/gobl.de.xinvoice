@@ -3,9 +3,9 @@ module github.com/invopop/gobl.de.xinvoice
 go 1.25.0
 
 require (
-	github.com/invopop/gobl v0.509.0
-	github.com/invopop/gobl.cii v0.73.0
-	github.com/invopop/gobl.ubl v0.91.0
+	github.com/invopop/gobl v0.510.0
+	github.com/invopop/gobl.cii v0.75.0
+	github.com/invopop/gobl.ubl v0.93.0
 	github.com/invopop/phorm v0.1.5
 	github.com/stretchr/testify v1.11.1
 )
