@@ -25,6 +25,24 @@ the converted documents, and detects the syntax when parsing, so the base
 libraries stay free of anything German. The German addon on the GOBL
 invoice shapes the document content.
 
+## Addons
+
+This module defines the German GOBL addons:
+
+- `de-xrechnung-v3` in [`addon/xrechnung`](./addon/xrechnung): the XRechnung
+  rules on top of EN 16931.
+- `de-zugferd-v2` in [`addon/zugferd`](./addon/zugferd): a placeholder that
+  requires EN 16931.
+
+The keys are listed in GOBL core's approved external addons, so they are
+valid `$addons` values in the JSON Schema. Documents that declare them need
+this module imported to be calculated or validated. Importing the root
+package registers both, as does the lighter `addon` package:
+
+```golang
+import _ "github.com/invopop/gobl.de.xinvoice/addon"
+```
+
 ## Formats
 
 | Key | Format | File name |
@@ -166,9 +184,6 @@ that package rather than `./...`.
 - Mapping limitations are those of the base libraries; see
   [gobl.ubl](https://github.com/invopop/gobl.ubl) and
   [gobl.cii](https://github.com/invopop/gobl.cii) directly.
-- The addon definitions still live in GOBL core (`gobl/addons/de`). Moving
-  them into this module's `addon/` packages with the external addon
-  registration in GOBL's `addons/external.go` is a planned follow-up.
 - The German formats are also registered with gobl.ubl and gobl.cii, and
   through them with GOBL's `convert` register, so `ubl.Import`, `cii.Import`
   and `convert.Import` recognise German documents once this module is
