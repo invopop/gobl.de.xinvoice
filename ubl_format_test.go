@@ -117,7 +117,7 @@ func TestConvertRegister(t *testing.T) {
 
 	t.Run("export", func(t *testing.T) {
 		env := loadUBLEnvelope(t, "xrechnung/invoice-xr-minimal.json")
-		out, err := convert.Export(env, xinvoice.KeyXRechnungUBL, ubl.FormatEN16931.Key)
+		out, err := convert.Export(env, xinvoice.KeyXRechnungUBL, convert.WithAlternatives(ubl.FormatEN16931.Key))
 		require.NoError(t, err)
 		assert.Equal(t, xinvoice.KeyXRechnungUBL, out.Format.Key)
 

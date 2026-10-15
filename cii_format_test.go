@@ -10,6 +10,7 @@ import (
 	cii "github.com/invopop/gobl.cii"
 	xinvoice "github.com/invopop/gobl.de.xinvoice"
 	"github.com/invopop/gobl/bill"
+	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/convert"
 	"github.com/invopop/gobl/num"
 	"github.com/invopop/gobl/org"
@@ -191,6 +192,23 @@ func TestCIIConvertRegister(t *testing.T) {
 		f, err := convert.Detect(out.Data)
 		require.NoError(t, err)
 		assert.Equal(t, xinvoice.KeyXRechnungCII, f.Key, "detected again")
+	})
+	t.Run("attachments", func(t *testing.T) {
+		for _, k := range []cbc.Key{xinvoice.KeyXRechnungCII, xinvoice.KeyZUGFeRDCII, xinvoice.KeyZUGFeRDExtendedCII} {
+			assert.True(t, convert.FormatFor(k).Attachments, k)
+		}
+		assert.False(t, convert.FormatFor(xinvoice.KeyZUGFeRDBasicCII).Attachments)
+		assert.True(t, convert.FormatFor(xinvoice.KeyXRechnungUBL).Attachments)
+
+		env := loadCIIEnvelope(t, "xrechnung/invoice-de-de.json")
+		pdf := &convert.Attachment{Name: "invoice.pdf", MIME: "application/pdf", Data: []byte("%PDF")}
+		out, err := convert.Export(env, xinvoice.KeyXRechnungCII, convert.WithAttachments(pdf))
+		require.NoError(t, err)
+		doc, err := cii.Decode(out.Data)
+		require.NoError(t, err)
+		atts := doc.(*cii.Invoice).ExtractBinaryAttachments()
+		require.Len(t, atts, 1)
+		assert.Equal(t, "invoice.pdf", atts[0].Filename)
 	})
 	t.Run("zugferd en 16931 is export-only", func(t *testing.T) {
 		f := convert.FormatFor(xinvoice.KeyZUGFeRDCII)

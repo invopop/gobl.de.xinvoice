@@ -120,7 +120,9 @@ The conversion adds the format's GOBL addon (`de-xrechnung-v3` or
 revalidating the envelope so the German rules run before any mapping.
 
 To embed a file inside the generated XML, such as the PDF rendition of the
-invoice, pass `xinvoice.WithAttachment`.
+invoice, pass `xinvoice.WithAttachment`. Through the GOBL `convert` register,
+pass `convert.WithAttachments` instead: the XRechnung formats and the ZUGFeRD
+EN 16931 and EXTENDED profiles embed them, while ZUGFeRD BASIC is refused.
 
 ### Parse a German XML document
 
