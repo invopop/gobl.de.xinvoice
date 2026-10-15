@@ -108,8 +108,9 @@ func TestConvertRegister(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, xinvoice.KeyXRechnungUBL, f.Key)
 
-		env, err := convert.Import(data)
+		imported, err := convert.Import(data)
 		require.NoError(t, err)
+		env := imported.Envelope
 		inv, ok := env.Extract().(*bill.Invoice)
 		require.True(t, ok)
 		assert.Contains(t, inv.GetAddons(), xinvoice.UBLFormatXRechnung.Addons[0])

@@ -209,6 +209,12 @@ func TestCIIConvertRegister(t *testing.T) {
 		atts := doc.(*cii.Invoice).ExtractBinaryAttachments()
 		require.Len(t, atts, 1)
 		assert.Equal(t, "invoice.pdf", atts[0].Filename)
+
+		imported, err := convert.Import(out.Data)
+		require.NoError(t, err)
+		assert.Equal(t, xinvoice.KeyXRechnungCII, imported.Format.Key)
+		require.Len(t, imported.Attachments, 1)
+		assert.Equal(t, pdf.Data, imported.Attachments[0].Data)
 	})
 	t.Run("zugferd en 16931 is export-only", func(t *testing.T) {
 		f := convert.FormatFor(xinvoice.KeyZUGFeRDCII)
