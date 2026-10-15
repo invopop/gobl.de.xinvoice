@@ -92,6 +92,9 @@
 			"i": 1,
 			"item": {
 				"description": "Verpackung: Flasche\nVKE/Geb: 1",
+				"ext": {
+					"untdid-unit": "H87"
+				},
 				"identities": [
 					{
 						"code": "4123456000014",
@@ -100,6 +103,7 @@
 						}
 					}
 				],
+				"list": "1.0000",
 				"name": "Zitronensäure 100ml",
 				"price": "1.0000",
 				"ref": "ZS997",
@@ -123,6 +127,10 @@
 			"i": 2,
 			"item": {
 				"description": "Verpackung: Karton\nVKE/Geb: 1",
+				"discount": "0.05",
+				"ext": {
+					"untdid-unit": "H87"
+				},
 				"identities": [
 					{
 						"code": "4123456000021",
@@ -131,6 +139,7 @@
 						}
 					}
 				],
+				"list": "1.5000",
 				"name": "Gelierzucker Extra 250g",
 				"price": "1.4500",
 				"ref": "GZ250",

@@ -29,6 +29,9 @@
 		{
 			"i": 1,
 			"item": {
+				"ext": {
+					"untdid-unit": "H87"
+				},
 				"identities": [
 					{
 						"code": "4012345001235",
@@ -37,6 +40,7 @@
 						}
 					}
 				],
+				"list": "9.9000",
 				"name": "Trennblätter A4",
 				"price": "9.9000",
 				"ref": "TB100A4",
@@ -59,6 +63,9 @@
 		{
 			"i": 2,
 			"item": {
+				"ext": {
+					"untdid-unit": "H87"
+				},
 				"identities": [
 					{
 						"code": "4000050986428",
@@ -67,6 +74,7 @@
 						}
 					}
 				],
+				"list": "5.5000",
 				"name": "Joghurt Banane",
 				"price": "5.5000",
 				"ref": "ARNR2",
