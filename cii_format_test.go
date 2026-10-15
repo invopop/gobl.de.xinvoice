@@ -192,4 +192,16 @@ func TestCIIConvertRegister(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, xinvoice.KeyXRechnungCII, f.Key, "detected again")
 	})
+	t.Run("zugferd en 16931 is export-only", func(t *testing.T) {
+		f := convert.FormatFor(xinvoice.KeyZUGFeRDCII)
+		require.NotNil(t, f)
+		assert.Empty(t, f.Import)
+
+		env := loadCIIEnvelope(t, "zugferd/standard-invoice.json")
+		out, err := convert.Export(env, xinvoice.KeyZUGFeRDCII)
+		require.NoError(t, err)
+		d, err := convert.Detect(out.Data)
+		require.NoError(t, err)
+		assert.Equal(t, cii.FormatEN16931.Key, d.Key, "imported as EN 16931")
+	})
 }
