@@ -9,6 +9,7 @@ import (
 	"github.com/invopop/gobl"
 	cii "github.com/invopop/gobl.cii"
 	xinvoice "github.com/invopop/gobl.de.xinvoice"
+	"github.com/invopop/gobl.de.xinvoice/addon/zugferd"
 	"github.com/invopop/gobl/bill"
 	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/convert"
@@ -216,10 +217,10 @@ func TestCIIConvertRegister(t *testing.T) {
 		require.Len(t, imported.Attachments, 1)
 		assert.Equal(t, pdf.Data, imported.Attachments[0].Data)
 	})
-	t.Run("zugferd en 16931 is export-only", func(t *testing.T) {
+	t.Run("zugferd en 16931 is imported on request", func(t *testing.T) {
 		f := convert.FormatFor(xinvoice.KeyZUGFeRDCII)
 		require.NotNil(t, f)
-		assert.Empty(t, f.Import)
+		assert.NotEmpty(t, f.Import)
 
 		env := loadCIIEnvelope(t, "zugferd/standard-invoice.json")
 		out, err := convert.Export(env, xinvoice.KeyZUGFeRDCII)
@@ -227,5 +228,12 @@ func TestCIIConvertRegister(t *testing.T) {
 		d, err := convert.Detect(out.Data)
 		require.NoError(t, err)
 		assert.Equal(t, cii.FormatEN16931.Key, d.Key, "imported as EN 16931")
+
+		imported, err := convert.Import(out.Data, convert.WithFormats(xinvoice.KeyZUGFeRDCII))
+		require.NoError(t, err)
+		assert.Equal(t, xinvoice.KeyZUGFeRDCII, imported.Format.Key)
+		inv, ok := imported.Envelope.Extract().(*bill.Invoice)
+		require.True(t, ok)
+		assert.Contains(t, inv.GetAddons(), zugferd.V2)
 	})
 }

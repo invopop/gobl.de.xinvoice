@@ -193,10 +193,12 @@ that package rather than `./...`.
   `cii+de-xrechnung-v3` (`CIIFormatXRechnung`), and `cii+de-zugferd-v2`,
   `cii+de-zugferd-v2+basic` and `cii+de-zugferd-v2+extended`
   (`CIIFormatZUGFeRD`, `CIIFormatZUGFeRDBasic`, `CIIFormatZUGFeRDExtended`).
-  `cii+de-zugferd-v2` is export-only: ZUGFeRD EN 16931 XML declares exactly
-  the EN 16931 guideline, as only its PDF tells it apart, so `cii.Import` and
-  `convert.Import` import it as `cii+en16931-v2017`. Add the `de-zugferd-v2`
-  addon to export it back as ZUGFeRD.
+  `cii+de-zugferd-v2` is never detected: ZUGFeRD EN 16931 XML declares
+  exactly the EN 16931 guideline, as only its PDF tells it apart, so
+  `cii.Import` and `convert.Import` import it as `cii+en16931-v2017`, unless
+  the format is asked for with `convert.WithFormats`, as when the XML was
+  taken from a ZUGFeRD PDF. Add the `de-zugferd-v2` addon to export it back
+  as ZUGFeRD.
 - Schematron validation is not part of the conversion. The opt-in
   `TestSchematron` (run with `-validate` and a phorm service; CI runs it
   with a service container) checks every converted fixture against the

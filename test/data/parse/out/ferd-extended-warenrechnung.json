@@ -36,7 +36,9 @@
 		"identities": [
 			{
 				"code": "4304171088093",
-				"label": "0088"
+				"ext": {
+					"iso-scheme-id": "0088"
+				}
 			}
 		],
 		"receiver": {
