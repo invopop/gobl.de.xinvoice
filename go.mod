@@ -3,9 +3,9 @@ module github.com/invopop/gobl.de.xinvoice
 go 1.25.0
 
 require (
-	github.com/invopop/gobl v0.510.0
-	github.com/invopop/gobl.cii v0.75.0
-	github.com/invopop/gobl.ubl v0.93.0
+	github.com/invopop/gobl v0.511.2-0.20261028160436-70b61edef3e2
+	github.com/invopop/gobl.cii v0.81.1-0.20261028160616-999db3c5e8d4
+	github.com/invopop/gobl.ubl v0.98.1-0.20261028160721-737472d1d732
 	github.com/invopop/phorm v0.1.5
 	github.com/stretchr/testify v1.11.1
 )
@@ -23,7 +23,7 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/invopop/jsonschema v0.14.0 // indirect
 	github.com/invopop/validation v0.8.0 // indirect
-	github.com/invopop/xmlctx v0.13.0 // indirect
+	github.com/invopop/xmlctx v0.14.0 // indirect
 	github.com/invopop/xmldsig v0.14.0 // indirect
 	github.com/invopop/yaml v0.3.1 // indirect
 	github.com/jonboulle/clockwork v0.5.0 // indirect
