@@ -53,8 +53,11 @@ var CIIFormatZUGFeRD = cii.Format{
 	Name:      i18n.NewString("CII ZUGFeRD EN 16931"),
 	Countries: []l10n.Code{l10n.DE},
 	// Only the PDF container tells its documents apart from EN 16931 ones,
-	// so the format is export-only and they import as EN 16931.
+	// so the format is never detected and they import as EN 16931, unless
+	// it is asked for by key, as when the XML was taken from a ZUGFeRD PDF.
+	Import:      ciiSchemas,
 	Export:      ciiSchemas,
+	OnRequest:   true,
 	GuidelineID: cii.GuidelineIDEN16931,
 	Version:     cii.VersionD16B,
 	Addons:      []cbc.Key{zugferd.V2},
