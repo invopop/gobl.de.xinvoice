@@ -4,8 +4,8 @@ go 1.25.0
 
 require (
 	github.com/invopop/gobl v0.512.0
-	github.com/invopop/gobl.cii v0.81.1-0.20261111113349-3acc818583e9
-	github.com/invopop/gobl.ubl v0.98.1-0.20261111113400-bee1790a2528
+	github.com/invopop/gobl.cii v0.83.0
+	github.com/invopop/gobl.ubl v0.101.0
 	github.com/invopop/phorm v0.1.5
 	github.com/stretchr/testify v1.11.1
 )

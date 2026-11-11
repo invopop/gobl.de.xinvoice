@@ -155,6 +155,9 @@
 				}
 			}
 		],
+		"registration": {
+			"other": "123/456/7890, HRA-Eintrag in […]"
+		},
 		"tax_id": {
 			"code": "123456789",
 			"country": "DE"
